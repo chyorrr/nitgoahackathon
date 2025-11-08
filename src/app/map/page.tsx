@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import api from '@/lib/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, ChevronDown, MapPin, X, Upload, Camera } from 'lucide-react';
 import dynamic from 'next/dynamic';
@@ -41,23 +42,45 @@ export default function MapPage() {
   };
 
   const handleSubmitReport = () => {
-    // Handle report submission
-    console.log({
-      title: issueTitle,
-      description: issueDescription,
-      location: issueLocation,
-      category: selectedCategory,
-      status: selectedStatus,
-      images: uploadedImages
-    });
-    setShowReportModal(false);
-    // Reset form
-    setIssueTitle('');
-    setIssueDescription('');
-    setIssueLocation('');
-    setSelectedCategory('');
-    setSelectedStatus('');
-    setUploadedImages([]);
+    // Prepare and submit report to backend
+    (async () => {
+      try {
+        // Try to get user's current location; fallback to Goa center
+        const getPosition = () => new Promise<GeolocationPosition | null>((resolve) => {
+          if (!navigator.geolocation) return resolve(null);
+          navigator.geolocation.getCurrentPosition(pos => resolve(pos), () => resolve(null), { timeout: 5000 });
+        });
+
+        const pos = await getPosition();
+        const lat = pos ? pos.coords.latitude : 15.4909;
+        const lng = pos ? pos.coords.longitude : 73.8278;
+
+        const form = new FormData();
+        form.append('title', issueTitle);
+        form.append('description', issueDescription);
+        form.append('category', selectedCategory || 'Others');
+        form.append('latitude', String(lat));
+        form.append('longitude', String(lng));
+        if (uploadedImages && uploadedImages.length > 0) {
+          // backend expects field name 'issueImage'
+          form.append('issueImage', uploadedImages[0]);
+        }
+
+        await api.createIssue(form);
+        alert('Issue reported successfully');
+        setShowReportModal(false);
+        // Reset form
+        setIssueTitle('');
+        setIssueDescription('');
+        setIssueLocation('');
+        setSelectedCategory('');
+        setSelectedStatus('');
+        setUploadedImages([]);
+      } catch (err: any) {
+        console.error(err);
+        alert(err?.message || 'Failed to submit report');
+      }
+    })();
   };
 
   return (

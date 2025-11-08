@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { Mail, Phone, Lock, Shield, Eye, EyeOff, ArrowRight, Check, User, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import api from '@/lib/api';
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -26,19 +27,22 @@ export default function SignUpPage() {
     return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (captchaValue === generatedCaptcha) {
-      if (formData.password !== formData.confirmPassword) {
-        alert('Passwords do not match!');
-        return;
-      }
-      setCaptchaVerified(true);
-      console.log('Sign up submitted:', formData);
-      // Redirect to map page after successful signup
-      router.push('/map');
-    } else {
+    if (captchaValue !== generatedCaptcha) {
       alert('Invalid CAPTCHA. Please try again.');
+      return;
+    }
+    if (formData.password !== formData.confirmPassword) {
+      alert('Passwords do not match!');
+      return;
+    }
+    try {
+      await api.register({ username: formData.fullName, email: formData.email, password: formData.password, role: 'citizen' });
+      alert('Registered successfully. Please log in.');
+      router.push('/login');
+    } catch (err: any) {
+      alert(err?.message || 'Registration error');
     }
   };
 
