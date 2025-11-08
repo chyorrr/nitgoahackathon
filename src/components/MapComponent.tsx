@@ -243,6 +243,43 @@ export default function MapComponent({ onReportIssue, onLocationSelected }: MapC
             }
           })
         );
+
+        // Map double-click to open report modal
+        listeners.push(
+          g.maps.event.addListener(map, 'dblclick', (e: google.maps.MapMouseEvent) => {
+            if (!e.latLng) return;
+            const pos = e.latLng;
+            
+            // Set the marker location
+            if (!locationMarker) {
+              locationMarker = new g.maps.Marker({
+                position: pos,
+                map,
+                icon: {
+                  path: g.maps.SymbolPath.CIRCLE,
+                  fillColor: '#2563eb',
+                  fillOpacity: 0.9,
+                  strokeColor: '#ffffff',
+                  strokeWeight: 2,
+                  scale: 6,
+                },
+              });
+            } else {
+              locationMarker.setPosition(pos);
+            }
+            
+            // Update location
+            if (onLocationSelectedRef.current) {
+              const { lat, lng } = pos.toJSON();
+              onLocationSelectedRef.current({ lat, lng });
+            }
+            
+            // Open report modal
+            if (onReportIssueRef.current) {
+              onReportIssueRef.current();
+            }
+          })
+        );
       })
       .catch((e) => {
         console.error('Failed to load Google Maps', e);

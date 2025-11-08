@@ -10,8 +10,8 @@ const steps = [
     title: "Report the Issue",
     description: "Take a photo and describe the civic problem you've encountered",
     details: "Use your smartphone to capture clear images and provide detailed descriptions of the issue",
-    color: "bg-[#2979FF]/50",
-    iconColor: "text-[#2979FF]",
+    color: "bg-linear-to-br from-blue-50 to-indigo-50",
+    iconColor: "text-blue-600",
     number: "01"
   },
   {
@@ -19,8 +19,8 @@ const steps = [
     title: "Add Location Details",
     description: "Your GPS location is automatically captured for precise identification",
     details: "The system records exact coordinates and allows you to adjust if needed",
-    color: "bg-green-50",
-    iconColor: "text-green-600",
+    color: "bg-linear-to-br from-emerald-50 to-green-50",
+    iconColor: "text-emerald-600",
     number: "02"
   },
   {
@@ -28,8 +28,8 @@ const steps = [
     title: "Track Progress",
     description: "Monitor your report's status as authorities work on the resolution",
     details: "Receive real-time updates via notifications and view progress on the interactive map",
-    color: "bg-orange-50",
-    iconColor: "text-orange-600",
+    color: "bg-linear-to-br from-amber-50 to-orange-50",
+    iconColor: "text-amber-600",
     number: "03"
   },
   {
@@ -37,7 +37,7 @@ const steps = [
     title: "See the Impact",
     description: "Witness your contribution to building a better community",
     details: "View resolution confirmation and help others by rating the effectiveness",
-    color: "bg-purple-50",
+    color: "bg-linear-to-br from-purple-50 to-violet-50",
     iconColor: "text-purple-600",
     number: "04"
   }
@@ -45,19 +45,12 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="relative py-24 px-4 sm:px-6 lg:px-8 bg-transparent overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 pointer-events-none opacity-25">
-        <Aurora 
-          colorStops={['#2979FF', '#4A90E2', '#2979FF']}
-          amplitude={1.8}
-          blend={0.5}
-          speed={0.4}
-        />
+    <section id="how-it-works" className="relative py-24 px-4 sm:px-6 lg:px-8 bg-linear-to-b from-white via-purple-50/20 to-white overflow-hidden">
+      {/* Subtle gradient orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/4 left-0 w-96 h-96 bg-linear-to-br from-pink-200/20 to-rose-200/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-0 w-96 h-96 bg-linear-to-br from-indigo-200/20 to-purple-200/20 rounded-full blur-3xl" />
       </div>
-
-      {/* Subtle overlay for better text readability */}
-      <div className="absolute inset-0 bg-linear-to-b from-white/85 via-white/60 to-white/85 pointer-events-none z-1"></div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
@@ -140,17 +133,17 @@ export default function HowItWorks() {
                   <motion.div
                     animate={{ y: [0, -10, 0] }}
                     transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute -top-4 -right-4 w-8 h-8 bg-white border border-[#E0E0E0] rounded-lg shadow-lg flex items-center justify-center"
+                    className="absolute -top-4 -right-4 w-8 h-8 bg-white border border-violet-200 rounded-lg shadow-lg flex items-center justify-center"
                   >
-                    <div className="w-2 h-2 bg-[#2979FF] rounded-full"></div>
+                    <div className="w-2 h-2 bg-linear-to-r from-violet-500 to-purple-500 rounded-full"></div>
                   </motion.div>
                   
                   <motion.div
                     animate={{ y: [0, 10, 0] }}
                     transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                    className="absolute -bottom-4 -left-4 w-6 h-6 bg-white border border-[#E0E0E0] rounded-full shadow-lg flex items-center justify-center"
+                    className="absolute -bottom-4 -left-4 w-6 h-6 bg-white border border-emerald-200 rounded-full shadow-lg flex items-center justify-center"
                   >
-                    <div className="w-1.5 h-1.5 bg-[#00C853] rounded-full"></div>
+                    <div className="w-1.5 h-1.5 bg-linear-to-r from-emerald-500 to-green-500 rounded-full"></div>
                   </motion.div>
                 </motion.div>
               </div>
@@ -166,9 +159,9 @@ export default function HowItWorks() {
           transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
           className="text-center mt-24"
         >
-          <div className="inline-block px-8 py-4 bg-transparent border border-slate-200 rounded-xl shadow-sm">
+          <div className="inline-block px-8 py-4 bg-linear-to-r from-violet-50 to-purple-50 border border-violet-200/60 rounded-xl shadow-sm backdrop-blur-sm">
             <p className="text-slate-700 font-medium text-lg">
-              Ready to make a difference? <span className="text-[#2979FF] font-semibold">Start reporting today</span>
+              Ready to make a difference? <span className="bg-linear-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent font-semibold">Start reporting today</span>
             </p>
           </div>
         </motion.div>

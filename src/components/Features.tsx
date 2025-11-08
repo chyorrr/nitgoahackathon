@@ -10,49 +10,49 @@ const features = [
     icon: <Camera className="w-8 h-8" />,
     title: "Photo Documentation",
     description: "Capture and upload high-quality images to provide visual evidence of civic issues",
-    color: "from-[#00C853] to-[#69F0AE]",
-    bgColor: "bg-[#69F0AE]/10",
-    textColor: "text-[#00C853]"
+    color: "from-emerald-500 to-green-500",
+    bgColor: "bg-linear-to-br from-emerald-50 to-green-50",
+    textColor: "text-emerald-600"
   },
   {
     icon: <MapPin className="w-8 h-8" />,
     title: "Live GPS Location",
     description: "Automatic location tagging ensures precise identification of issue locations",
-    color: "from-[#00C853] to-[#69F0AE]",
-    bgColor: "bg-[#69F0AE]/10",
-    textColor: "text-[#00C853]"
+    color: "from-violet-500 to-purple-500",
+    bgColor: "bg-linear-to-br from-violet-50 to-purple-50",
+    textColor: "text-violet-600"
   },
   {
     icon: <Smartphone className="w-8 h-8" />,
     title: "Mobile-First Design",
     description: "Optimized for smartphones with intuitive interface for on-the-go reporting",
-    color: "from-[#2979FF] to-[#2979FF]",
-    bgColor: "bg-[#2979FF]/10",
-    textColor: "text-[#2979FF]"
+    color: "from-blue-500 to-cyan-500",
+    bgColor: "bg-linear-to-br from-blue-50 to-cyan-50",
+    textColor: "text-blue-600"
   },
   {
     icon: <Eye className="w-8 h-8" />,
     title: "Real-Time Tracking",
     description: "Monitor the progress of reported issues from submission to resolution",
-    color: "from-[#00C853] to-[#69F0AE]",
-    bgColor: "bg-[#69F0AE]/10",
-    textColor: "text-[#00C853]"
+    color: "from-amber-500 to-orange-500",
+    bgColor: "bg-linear-to-br from-amber-50 to-orange-50",
+    textColor: "text-amber-600"
   },
   {
     icon: <BarChart3 className="w-8 h-8" />,
     title: "Interactive City Map",
     description: "Visualize all reported issues on a comprehensive, filterable city map",
-    color: "from-[#2979FF] to-[#2979FF]",
-    bgColor: "bg-[#2979FF]/10",
-    textColor: "text-[#2979FF]"
+    color: "from-pink-500 to-rose-500",
+    bgColor: "bg-linear-to-br from-pink-50 to-rose-50",
+    textColor: "text-pink-600"
   },
   {
     icon: <Shield className="w-8 h-8" />,
     title: "Community Impact",
     description: "Build transparency and trust between citizens and municipal authorities",
-    color: "from-[#00C853] to-[#69F0AE]",
-    bgColor: "bg-[#69F0AE]/10",
-    textColor: "text-[#00C853]"
+    color: "from-indigo-500 to-blue-500",
+    bgColor: "bg-linear-to-br from-indigo-50 to-blue-50",
+    textColor: "text-indigo-600"
   }
 ];
 
@@ -66,19 +66,12 @@ export default function Features() {
   const y = useTransform(scrollYProgress, [0, 1], [50, -50]);
 
   return (
-    <section ref={containerRef} className="relative py-24 px-4 sm:px-6 lg:px-8 bg-transparent overflow-hidden">
-      {/* Aurora Background */}
-      <motion.div style={{ y }} className="absolute inset-0 pointer-events-none opacity-25">
-        <Aurora 
-          colorStops={['#2979FF', '#4A90E2', '#2979FF']}
-          amplitude={1.8}
-          blend={0.5}
-          speed={0.4}
-        />
-      </motion.div>
-
-      {/* Subtle overlay for better text readability */}
-      <div className="absolute inset-0 bg-linear-to-b from-white/85 via-white/60 to-white/85 pointer-events-none z-1"></div>
+    <section ref={containerRef} className="relative py-24 px-4 sm:px-6 lg:px-8 bg-linear-to-b from-white via-indigo-50/30 to-white overflow-hidden">
+      {/* Subtle gradient orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-96 h-96 bg-linear-to-br from-violet-200/30 to-purple-200/30 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-linear-to-br from-blue-200/30 to-cyan-200/30 rounded-full blur-3xl" />
+      </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
@@ -122,12 +115,12 @@ export default function Features() {
               whileHover={{ y: -8 }}
               className="group relative text-center max-w-sm"
             >
-              <motion.div className="relative bg-white rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-200 hover:border-slate-300 h-full overflow-hidden">
+              <motion.div className="relative bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-200/60 hover:border-slate-300 h-full overflow-hidden">
                 {/* Icon */}
                 <div className="flex justify-center mb-6">
                   <motion.div
                     whileHover={{ scale: 1.15, rotate: 5 }}
-                    transition={{ type: "spring", stiffness: 300 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 15 }}
                     className={`w-16 h-16 ${feature.bgColor} rounded-xl flex items-center justify-center ${feature.textColor} shadow-sm group-hover:shadow-md transition-all duration-300`}
                   >
                     {feature.icon}

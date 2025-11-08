@@ -43,46 +43,46 @@ export default function LocationRequestModal({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.2 }}
-            className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6"
+            className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-8"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                <Navigation className="w-6 h-6 text-blue-600" />
+            <div className="flex items-start justify-between mb-6">
+              <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center">
+                <Navigation className="w-7 h-7 text-blue-600" />
               </div>
               <button
                 onClick={onClose}
-                className="p-1 hover:bg-slate-100 rounded-lg transition-colors"
+                className="p-2 hover:bg-zinc-100 rounded-lg transition-colors"
               >
-                <X className="w-5 h-5 text-slate-400" />
+                <X className="w-5 h-5 text-zinc-400" />
               </button>
             </div>
 
             {/* Content */}
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-slate-900 mb-2">
-                Enable Location Services
+            <div className="mb-8">
+              <h2 className="text-2xl font-bold text-zinc-900 mb-3">
+                Enable Location
               </h2>
-              <p className="text-slate-600 text-sm leading-relaxed">
-                We'd like to access your location to:
+              <p className="text-zinc-600 text-sm leading-relaxed mb-4">
+                Help us provide a better experience by sharing your location.
               </p>
-              <ul className="mt-3 space-y-2 text-sm text-slate-600">
-                <li className="flex items-start gap-2">
+              <ul className="space-y-3 text-sm text-zinc-600">
+                <li className="flex items-start gap-3">
                   <MapPin className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
-                  <span>Show issues and services near you on the map</span>
+                  <span>Discover issues and services near you</span>
                 </li>
-                <li className="flex items-start gap-2">
+                <li className="flex items-start gap-3">
                   <MapPin className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
-                  <span>Automatically fill location when reporting issues</span>
+                  <span>Auto-fill location when reporting problems</span>
                 </li>
-                <li className="flex items-start gap-2">
+                <li className="flex items-start gap-3">
                   <MapPin className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
-                  <span>Provide more accurate and relevant information</span>
+                  <span>Get more relevant community updates</span>
                 </li>
               </ul>
-              <p className="mt-3 text-xs text-slate-500">
-                Your location data is only used to enhance your experience and is never shared with third parties.
+              <p className="mt-4 text-xs text-zinc-500 bg-zinc-50 p-3 rounded-lg">
+                🔒 Your location is stored locally and never shared with third parties.
               </p>
             </div>
 
@@ -91,34 +91,27 @@ export default function LocationRequestModal({
               <button
                 onClick={handleAllow}
                 disabled={isRequesting}
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg font-medium shadow-sm transition-colors"
+                className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all"
               >
                 {isRequesting ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    <span>Requesting Location...</span>
+                    <span>Requesting...</span>
                   </>
                 ) : (
                   <>
                     <Navigation className="w-5 h-5" />
-                    <span>Allow Location Access</span>
+                    <span>Allow Location</span>
                   </>
                 )}
               </button>
               <button
                 onClick={onSkip}
                 disabled={isRequesting}
-                className="w-full px-6 py-3 bg-slate-100 hover:bg-slate-200 disabled:bg-slate-50 disabled:text-slate-400 text-slate-700 rounded-lg font-medium transition-colors"
+                className="w-full px-6 py-3.5 bg-zinc-100 hover:bg-zinc-200 disabled:bg-zinc-50 disabled:text-zinc-400 text-zinc-700 rounded-xl font-medium transition-colors"
               >
-                Skip for Now
+                Maybe Later
               </button>
-            </div>
-
-            {/* Info */}
-            <div className="mt-4 text-center">
-              <p className="text-xs text-slate-500">
-                You can change this setting anytime in your browser preferences
-              </p>
             </div>
           </motion.div>
         </motion.div>

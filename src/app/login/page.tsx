@@ -32,6 +32,11 @@ export default function LoginPage() {
       setCaptchaVerified(true);
       console.log('Login submitted:', formData);
       
+      // Save auth state to localStorage
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('userName', formData.email.split('@')[0]);
+      localStorage.setItem('userEmail', formData.email);
+      
       // Show location request modal if not already requested
       if (!hasRequestedLocation) {
         setShowLocationModal(true);
