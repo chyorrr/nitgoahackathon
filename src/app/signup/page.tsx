@@ -43,7 +43,7 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-[#F8F9FA] via-white to-[#69F0AE]/10 flex items-center justify-center px-4 py-8 relative overflow-hidden">
+    <div className="min-h-screen pt-16 bg-linear-to-br from-[#F8F9FA] via-white to-[#69F0AE]/10 flex items-center justify-center px-4 py-8 relative overflow-hidden">
       {/* Background elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#69F0AE]/20 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float"></div>
@@ -54,7 +54,7 @@ export default function SignUpPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="relative z-10 w-full max-w-md"
+        className="relative z-50 w-full max-w-md mt-6"
       >
         {/* Sign Up Card */}
         <motion.div

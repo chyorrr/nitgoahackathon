@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { Flag, AlertCircle, User, FileText, Heart, CheckCircle, LogOut, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -11,6 +12,8 @@ export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
+  const pathname = usePathname();
+  const showReportButton = !pathname?.startsWith('/admin');
   
   const backgroundColor = useTransform(
     scrollY,
@@ -66,13 +69,15 @@ export default function Navbar() {
           </motion.div>
 
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.2 }} className="flex items-center gap-4">
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link href={isLoggedIn ? "/map" : "/login"} className="group relative inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-xl font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
-                <motion.div className="absolute inset-0 bg-red-700" initial={{ x: '-100%' }} whileHover={{ x: 0 }} transition={{ duration: 0.3 }} />
-                <AlertCircle className="w-5 h-5 relative z-10 group-hover:rotate-12 transition-transform duration-300" />
-                <span className="relative z-10">Report an Issue</span>
-              </Link>
-            </motion.div>
+            {showReportButton && (
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                <Link href={isLoggedIn ? "/map" : "/login"} className="group relative inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-xl font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
+                  <motion.div className="absolute inset-0 bg-red-700" initial={{ x: '-100%' }} whileHover={{ x: 0 }} transition={{ duration: 0.3 }} />
+                  <AlertCircle className="w-5 h-5 relative z-10 group-hover:rotate-12 transition-transform duration-300" />
+                  <span className="relative z-10">Report an Issue</span>
+                </Link>
+              </motion.div>
+            )}
 
             <div className="relative" ref={profileRef}>
               <motion.button onClick={() => setIsProfileOpen(!isProfileOpen)} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className={`w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300 ${isLoggedIn ? 'bg-[#2979FF] ring-2 ring-[#2979FF]/30 ring-offset-2' : 'bg-[#E0E0E0] hover:bg-[#757575]'}`}>
