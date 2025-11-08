@@ -5,10 +5,14 @@ import { motion } from 'framer-motion';
 import { Mail, Phone, Lock, Shield, Eye, EyeOff, ArrowRight, Check } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useLocation } from '@/contexts/LocationContext';
+import LocationRequestModal from '@/components/LocationRequestModal';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { requestLocation, hasRequestedLocation } = useLocation();
   const [showPassword, setShowPassword] = useState(false);
+  const [showLocationModal, setShowLocationModal] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     phone: '',
@@ -27,15 +31,40 @@ export default function LoginPage() {
     if (captchaValue === generatedCaptcha) {
       setCaptchaVerified(true);
       console.log('Login submitted:', formData);
-      // Redirect to map page after successful login
-      router.push('/map');
+      
+      // Show location request modal if not already requested
+      if (!hasRequestedLocation) {
+        setShowLocationModal(true);
+      } else {
+        // Redirect to map page directly if location already requested
+        router.push('/map');
+      }
     } else {
       alert('Invalid CAPTCHA. Please try again.');
     }
   };
 
+  const handleAllowLocation = async () => {
+    await requestLocation();
+    setShowLocationModal(false);
+    router.push('/map');
+  };
+
+  const handleSkipLocation = () => {
+    setShowLocationModal(false);
+    router.push('/map');
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F8F9FA] via-white to-[#69F0AE]/10 flex items-center justify-center px-4 py-8 relative overflow-hidden">
+    <>
+      <LocationRequestModal
+        isOpen={showLocationModal}
+        onClose={() => setShowLocationModal(false)}
+        onAllow={handleAllowLocation}
+        onSkip={handleSkipLocation}
+      />
+      
+    <div className="min-h-screen bg-linear-to-br from-[#F8F9FA] via-white to-[#69F0AE]/10 flex items-center justify-center px-4 py-8 relative overflow-hidden">
       {/* Background elements */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#69F0AE]/20 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float"></div>
@@ -235,5 +264,6 @@ export default function LoginPage() {
         </div>
       </motion.div>
     </div>
+    </>
   );
 }

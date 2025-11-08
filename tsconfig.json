@@ -13,6 +13,8 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
+    // Added baseUrl to enable TypeScript path mapping with "paths" below
+    "baseUrl": ".",
     "plugins": [
       {
         "name": "next"

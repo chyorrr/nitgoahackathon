@@ -4,9 +4,12 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, ChevronDown, MapPin, X, Upload, Camera } from 'lucide-react';
 import dynamic from 'next/dynamic';
+import MapNavbar from '@/components/MapNavbar';
+import type { MapComponentProps } from '@/components/MapComponent';
 
 // Dynamically import the Map component to avoid SSR issues
-const MapComponent = dynamic(() => import('@/components/MapComponent'), {
+// Typed dynamic import so TS knows the component's props
+const MapComponent = dynamic<MapComponentProps>(() => import('@/components/MapComponent').then(mod => mod.default), {
   ssr: false,
   loading: () => (
     <div className="w-full h-full flex items-center justify-center bg-slate-100">
@@ -22,16 +25,14 @@ export default function MapPage() {
   const [showReportModal, setShowReportModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState('');
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
-  const [showStatusDropdown, setShowStatusDropdown] = useState(false);
   const [issueTitle, setIssueTitle] = useState('');
   const [issueDescription, setIssueDescription] = useState('');
   const [issueLocation, setIssueLocation] = useState('');
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+  const categoryRef = useRef<HTMLDivElement>(null);
 
   const categories = ['Potholes', 'Street Lights', 'Garbage', 'Water Supply', 'Others'];
-  const statuses = ['Pending', 'In Progress', 'Resolved'];
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -47,7 +48,6 @@ export default function MapPage() {
       description: issueDescription,
       location: issueLocation,
       category: selectedCategory,
-      status: selectedStatus,
       images: uploadedImages
     });
     setShowReportModal(false);
@@ -56,28 +56,37 @@ export default function MapPage() {
     setIssueDescription('');
     setIssueLocation('');
     setSelectedCategory('');
-    setSelectedStatus('');
     setUploadedImages([]);
   };
 
-  return (
-    <div className="fixed inset-0 pt-20 flex flex-col bg-transparent overflow-hidden">
-      {/* Background elements - similar to landing page sections */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-[#69F0AE]/20 rounded-full filter blur-3xl opacity-30"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-[#00C853]/10 rounded-full filter blur-3xl opacity-20"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#2979FF]/5 rounded-full filter blur-3xl opacity-25"></div>
-      </div>
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (categoryRef.current && !categoryRef.current.contains(event.target as Node)) {
+        setShowCategoryDropdown(false);
+      }
+    };
+    
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
-      {/* Header Section */}
-      <div className="relative bg-white/90 backdrop-blur-sm z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          {/* Title */}
+  return (
+    <>
+      <MapNavbar onReportIssue={() => setShowReportModal(true)} />
+      
+  <div className="fixed inset-0 pt-16 flex flex-col bg-transparent overflow-hidden">
+      {/* Minimal background, removed glow circles for subtle design */}
+      <div className="absolute inset-0 pointer-events-none" />
+
+      {/* Header Section - merged styling with navbar */}
+      <div className="relative bg-white/80 backdrop-blur z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold text-[#212121]">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#1f2937]">
               Report. Track. Resolve.
             </h1>
-            <p className="text-[#757575] text-xs sm:text-sm mt-1">
+            <p className="text-[#6b7280] text-xs sm:text-sm mt-1">
               Your platform for reporting, tracking, and resolving community issues efficiently.
             </p>
           </div>
@@ -91,7 +100,7 @@ export default function MapPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-20 px-4 overflow-y-auto"
+            className="fixed inset-0 bg-black/50 z-2000 flex items-start justify-center pt-20 px-4 overflow-y-auto"
             onClick={() => setShowReportModal(false)}
           >
             <motion.div
@@ -132,17 +141,19 @@ export default function MapPage() {
                   </div>
                 </div>
 
-                {/* Category and Status Row */}
+                {/* Category and Upload Image Row */}
                 <div className="grid grid-cols-2 gap-4">
                   {/* Category Dropdown */}
-                  <div className="relative">
+                  <div className="relative" ref={categoryRef}>
                     <label className="block text-sm font-medium text-[#212121] mb-2">
                       Category <span className="text-red-600">*</span>
                     </label>
                     <button
-                      onClick={() => {
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         setShowCategoryDropdown(!showCategoryDropdown);
-                        setShowStatusDropdown(false);
                       }}
                       className="w-full px-3 py-2.5 text-sm border border-[#E0E0E0] rounded-lg bg-white text-[#212121] flex items-center justify-between hover:border-[#2979FF] transition-colors"
                     >
@@ -152,11 +163,14 @@ export default function MapPage() {
                       <ChevronDown className="w-4 h-4 ml-2" />
                     </button>
                     {showCategoryDropdown && (
-                      <div className="absolute top-full mt-2 w-full bg-white border border-[#E0E0E0] rounded-lg shadow-lg z-20 max-h-48 overflow-y-auto">
+                      <div className="absolute top-full mt-2 w-full bg-white border border-[#E0E0E0] rounded-lg shadow-lg z-2100 max-h-48 overflow-y-auto">
                         {categories.map((category) => (
                           <button
                             key={category}
-                            onClick={() => {
+                            type="button"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
                               setSelectedCategory(category);
                               setShowCategoryDropdown(false);
                             }}
@@ -169,39 +183,26 @@ export default function MapPage() {
                     )}
                   </div>
 
-                  {/* Status Dropdown */}
-                  <div className="relative">
+                  {/* Upload Image Button */}
+                  <div>
                     <label className="block text-sm font-medium text-[#212121] mb-2">
-                      Status <span className="text-red-600">*</span>
+                      Upload Photo
                     </label>
-                    <button
-                      onClick={() => {
-                        setShowStatusDropdown(!showStatusDropdown);
-                        setShowCategoryDropdown(false);
-                      }}
-                      className="w-full px-3 py-2.5 text-sm border border-[#E0E0E0] rounded-lg bg-white text-[#212121] flex items-center justify-between hover:border-[#2979FF] transition-colors"
+                    <label
+                      htmlFor="quick-image-upload"
+                      className="w-full px-3 py-2.5 text-sm border border-[#E0E0E0] rounded-lg bg-white text-[#757575] flex items-center justify-center hover:border-[#2979FF] transition-colors cursor-pointer"
                     >
-                      <span className={selectedStatus ? 'text-[#212121]' : 'text-[#757575]'}>
-                        {selectedStatus || 'Select Status'}
-                      </span>
-                      <ChevronDown className="w-4 h-4 ml-2" />
-                    </button>
-                    {showStatusDropdown && (
-                      <div className="absolute top-full mt-2 w-full bg-white border border-[#E0E0E0] rounded-lg shadow-lg z-20">
-                        {statuses.map((status) => (
-                          <button
-                            key={status}
-                            onClick={() => {
-                              setSelectedStatus(status);
-                              setShowStatusDropdown(false);
-                            }}
-                            className="w-full px-3 py-2 text-left text-sm hover:bg-[#F8F9FA] text-[#212121] transition-colors first:rounded-t-lg last:rounded-b-lg"
-                          >
-                            {status}
-                          </button>
-                        ))}
-                      </div>
-                    )}
+                      <Upload className="w-4 h-4 mr-2" />
+                      <span>Choose File</span>
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleImageUpload}
+                      className="hidden"
+                      id="quick-image-upload"
+                    />
                   </div>
                 </div>
 
@@ -301,8 +302,14 @@ export default function MapPage() {
 
       {/* Map Container */}
       <div className="flex-1 relative">
-        <MapComponent onReportIssue={() => setShowReportModal(true)} />
+        <MapComponent 
+          onReportIssue={() => setShowReportModal(true)}
+          onLocationSelected={({ lat, lng }) => {
+            setIssueLocation(`${lat.toFixed(6)}, ${lng.toFixed(6)}`);
+          }}
+        />
       </div>
     </div>
+    </>
   );
 }

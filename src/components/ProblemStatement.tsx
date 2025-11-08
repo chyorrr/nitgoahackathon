@@ -3,6 +3,7 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { AlertTriangle, Clock, Users, TrendingDown } from 'lucide-react';
 import { useRef } from 'react';
+import Aurora from './Iridescence';
 
 const problemStats = [
   {
@@ -44,10 +45,17 @@ export default function ProblemStatement() {
   return (
     <section ref={containerRef} className="relative py-24 px-4 sm:px-6 lg:px-8 bg-transparent overflow-hidden">
       {/* Background elements */}
-      <motion.div style={{ y, opacity }} className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 right-1/4 w-72 h-72 bg-slate-100 rounded-full filter blur-3xl opacity-30"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-72 h-72 bg-blue-50 rounded-full filter blur-3xl opacity-20"></div>
+      <motion.div style={{ y, opacity }} className="absolute inset-0 pointer-events-none opacity-25">
+        <Aurora 
+          colorStops={['#2979FF', '#4A90E2', '#2979FF']}
+          amplitude={1.8}
+          blend={0.5}
+          speed={0.4}
+        />
       </motion.div>
+
+      {/* Subtle overlay for better text readability */}
+      <div className="absolute inset-0 bg-linear-to-b from-white/85 via-white/60 to-white/85 pointer-events-none z-1"></div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
@@ -63,7 +71,7 @@ export default function ProblemStatement() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-transparent border border-[#E0E0E0]200 text-slate-700 rounded-full text-sm font-medium mb-6"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-[#E0E0E0] text-[#757575] rounded-full text-sm font-medium mb-6 shadow-sm"
           >
             <AlertTriangle className="w-4 h-4" />
             The Current Challenge

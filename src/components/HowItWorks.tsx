@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Camera, MapPin, Clock, CheckCircle } from 'lucide-react';
+import Aurora from './Iridescence';
 
 const steps = [
   {
@@ -44,11 +45,19 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section id="how-it-works" className="relative py-24 px-4 sm:px-6 lg:px-8 bg-slate-50 overflow-hidden">
+    <section id="how-it-works" className="relative py-24 px-4 sm:px-6 lg:px-8 bg-transparent overflow-hidden">
       {/* Background decoration */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-transparent rounded-full filter blur-3xl opacity-50"></div>
+      <div className="absolute inset-0 pointer-events-none opacity-25">
+        <Aurora 
+          colorStops={['#2979FF', '#4A90E2', '#2979FF']}
+          amplitude={1.8}
+          blend={0.5}
+          speed={0.4}
+        />
       </div>
+
+      {/* Subtle overlay for better text readability */}
+      <div className="absolute inset-0 bg-linear-to-b from-white/85 via-white/60 to-white/85 pointer-events-none z-1"></div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
@@ -64,7 +73,7 @@ export default function HowItWorks() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-transparent border border-slate-200 text-slate-700 rounded-full text-sm font-medium mb-6 shadow-sm"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-[#E0E0E0] text-[#757575] rounded-full text-sm font-medium mb-6 shadow-sm"
           >
             <div className="w-2 h-2 bg-[#2979FF]/500 rounded-full"></div>
             Simple Process
@@ -119,7 +128,7 @@ export default function HowItWorks() {
                   transition={{ duration: 0.3, ease: "easeOut" }}
                   className="relative"
                 >
-                  <div className="w-80 h-64 bg-gradient-to-br from-slate-100 to-slate-200 rounded-2xl shadow-xl flex items-center justify-center">
+                  <div className="w-80 h-64 bg-linear-to-br from-white to-[#F8F9FA] rounded-2xl shadow-xl border border-[#E0E0E0] flex items-center justify-center">
                     <div className={`w-24 h-24 ${step.color} rounded-full flex items-center justify-center ${step.iconColor} shadow-lg`}>
                       <div className="scale-150">
                         {step.icon}
@@ -131,17 +140,17 @@ export default function HowItWorks() {
                   <motion.div
                     animate={{ y: [0, -10, 0] }}
                     transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute -top-4 -right-4 w-8 h-8 bg-transparent rounded-lg shadow-lg flex items-center justify-center"
+                    className="absolute -top-4 -right-4 w-8 h-8 bg-white border border-[#E0E0E0] rounded-lg shadow-lg flex items-center justify-center"
                   >
-                    <div className="w-2 h-2 bg-[#2979FF]/500 rounded-full"></div>
+                    <div className="w-2 h-2 bg-[#2979FF] rounded-full"></div>
                   </motion.div>
                   
                   <motion.div
                     animate={{ y: [0, 10, 0] }}
                     transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                    className="absolute -bottom-4 -left-4 w-6 h-6 bg-transparent rounded-full shadow-lg flex items-center justify-center"
+                    className="absolute -bottom-4 -left-4 w-6 h-6 bg-white border border-[#E0E0E0] rounded-full shadow-lg flex items-center justify-center"
                   >
-                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
+                    <div className="w-1.5 h-1.5 bg-[#00C853] rounded-full"></div>
                   </motion.div>
                 </motion.div>
               </div>

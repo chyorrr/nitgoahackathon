@@ -24,7 +24,7 @@ export default function Hero() {
         className="absolute inset-0 pointer-events-none opacity-25"
       >
         <Aurora 
-          colorStops={['#69F0AE', '#00C853', '#69F0AE']}
+          colorStops={['#2979FF', '#4A90E2', '#2979FF']}
           amplitude={1.8}
           blend={0.5}
           speed={0.4}
@@ -75,16 +75,16 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
           className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
         >
-          <button className="group inline-flex items-center gap-2 px-8 py-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-500 font-semibold shadow-lg hover:shadow-xl">
+          <Link href="/map" className="group inline-flex items-center gap-2 px-8 py-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-500 font-semibold shadow-lg hover:shadow-xl">
             <MapPin className="w-5 h-5" />
             Report an Issue
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-500" />
-          </button>
+          </Link>
           
-          <button className="group inline-flex items-center gap-2 px-8 py-4 bg-white text-[#212121] rounded-lg hover:bg-[#F8F9FA] transition-all duration-500 font-semibold border border-[#E0E0E0] shadow-sm">
+          <Link href="/feed" className="group inline-flex items-center gap-2 px-8 py-4 bg-white text-[#212121] rounded-lg hover:bg-[#F8F9FA] transition-all duration-500 font-semibold border border-[#E0E0E0] shadow-sm">
             <BarChart3 className="w-5 h-5" />
-            View Impact Map
-          </button>
+            View Community Feed
+          </Link>
         </motion.div>
 
         {/* Stats */}
