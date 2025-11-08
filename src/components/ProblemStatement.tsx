@@ -43,19 +43,12 @@ export default function ProblemStatement() {
   const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
 
   return (
-    <section ref={containerRef} className="relative py-24 px-4 sm:px-6 lg:px-8 bg-transparent overflow-hidden">
-      {/* Background elements */}
-      <motion.div style={{ y, opacity }} className="absolute inset-0 pointer-events-none opacity-25">
-        <Aurora 
-          colorStops={['#2979FF', '#4A90E2', '#2979FF']}
-          amplitude={1.8}
-          blend={0.5}
-          speed={0.4}
-        />
-      </motion.div>
-
-      {/* Subtle overlay for better text readability */}
-      <div className="absolute inset-0 bg-linear-to-b from-white/85 via-white/60 to-white/85 pointer-events-none z-1"></div>
+    <section ref={containerRef} className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50 overflow-hidden">
+      {/* Subtle gradient orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-br from-rose-200/30 to-pink-200/30 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-purple-200/30 to-violet-200/30 rounded-full blur-3xl" />
+      </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
@@ -128,7 +121,7 @@ export default function ProblemStatement() {
 
                 {/* Subtle hover indicator */}
                 <motion.div
-                  className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-slate-400 to-slate-600 rounded-b-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                  className="absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r from-slate-400 to-slate-600 rounded-b-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                   initial={false}
                 />
               </motion.div>
