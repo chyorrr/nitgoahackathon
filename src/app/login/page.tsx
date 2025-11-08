@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import { Mail, Phone, Lock, Shield, Eye, EyeOff, ArrowRight, Check } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import api from '@/lib/api';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -23,23 +22,15 @@ export default function LoginPage() {
     return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (captchaValue !== generatedCaptcha) {
+    if (captchaValue === generatedCaptcha) {
+      setCaptchaVerified(true);
+      console.log('Login submitted:', formData);
+      // Redirect to map page after successful login
+      router.push('/map');
+    } else {
       alert('Invalid CAPTCHA. Please try again.');
-      return;
-    }
-    try {
-      const res = await api.login({ email: formData.email, password: formData.password });
-      // backend returns { token }
-      if (res && (res as any).token) {
-        localStorage.setItem('token', (res as any).token);
-        router.push('/map');
-      } else {
-        alert('Login failed');
-      }
-    } catch (err: any) {
-      alert(err?.message || 'Login error');
     }
   };
 
