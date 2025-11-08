@@ -22,16 +22,19 @@ const trustIndicators = [
 
 export default function CTA() {
   return (
-    <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-linear-to-b from-[#00C853]/5 via-[#69F0AE]/5 to-[#00C853]/5 overflow-hidden border-t border-[#E0E0E0]">
+    <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-transparent overflow-hidden border-t border-[#E0E0E0]">
       {/* Aurora Background */}
-      <div className="absolute inset-0 pointer-events-none opacity-15">
+      <div className="absolute inset-0 pointer-events-none opacity-25">
         <Aurora 
-          colorStops={['#00C853', '#2979FF', '#00C853']}
-          amplitude={1.5}
-          blend={0.6}
+          colorStops={['#2979FF', '#4A90E2', '#2979FF']}
+          amplitude={1.8}
+          blend={0.5}
           speed={0.4}
         />
       </div>
+
+      {/* Subtle overlay for better text readability */}
+      <div className="absolute inset-0 bg-linear-to-b from-white/85 via-white/60 to-white/85 pointer-events-none z-1"></div>
 
       <div className="max-w-4xl mx-auto relative z-10 text-center">
         <motion.div

@@ -1,186 +1,165 @@
 'use client';
 
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { Flag, AlertCircle, User, FileText, Heart, CheckCircle, LogOut, LogIn } from 'lucide-react';
+import { AlertCircle, CheckCircle, FileText, Flag, LogIn, LogOut, User, Settings } from 'lucide-react';
 import Link from 'next/link';
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
-  const { scrollY } = useScroll();
-  
-  const backgroundColor = useTransform(
-    scrollY,
-    [0, 100],
-    ['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.95)']
-  );
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+    const onClick = (e: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
         setIsProfileOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', onClick);
+    return () => document.removeEventListener('mousedown', onClick);
   }, []);
 
-  const profileMenuItems = [
-    { icon: <AlertCircle className="w-4 h-4" />, label: 'Add New Issue', href: '/report', color: 'text-[#00C853]', bgHover: 'hover:bg-[#69F0AE]/10' },
-    { icon: <FileText className="w-4 h-4" />, label: 'Reported Issues', href: '/my-reports', count: 12 },
-    { icon: <CheckCircle className="w-4 h-4" />, label: 'Verified Issues', href: '/verified', count: 5 },
+  const menuItems = [
+    { icon: <AlertCircle className="w-4 h-4" />, label: 'Add New Issue', href: '/map' },
+    { icon: <FileText className="w-4 h-4" />, label: 'My Reports', href: '/my-reports', count: 12 },
+    { icon: <CheckCircle className="w-4 h-4" />, label: 'Community Feed', href: '/feed', count: 5 },
+    { icon: <Settings className="w-4 h-4" />, label: 'Settings', href: '/settings' },
   ];
 
   return (
-    <motion.nav
-      style={{ backgroundColor }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'shadow-lg backdrop-blur-lg' : ''}`}
-    >
+    <nav className="fixed top-0 inset-x-0 z-50 bg-white/90 backdrop-blur-sm border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}>
-            <Link href="/" className="group relative flex items-center gap-2 text-[#212121] hover:text-[#00C853] transition-colors duration-300 font-medium text-sm px-3 py-2 rounded-lg">
-              <motion.div className="absolute inset-0 bg-[#F8F9FA] rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <span className="relative z-10">Home</span>
+        <div className="h-16 flex items-center justify-between">
+          {/* Left: Home and Feed */}
+          <div className="flex items-center gap-4">
+            <Link href="/" className="text-slate-700 hover:text-slate-900 text-sm font-medium px-2 py-1">
+              Home
             </Link>
-          </motion.div>
-
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }} className="absolute left-1/2 transform -translate-x-1/2">
-            <Link href="/" className="flex items-center gap-3 group">
-              <motion.div whileHover={{ rotate: 5, scale: 1.1 }} transition={{ type: "spring", stiffness: 300 }} className="w-10 h-10 bg-[#00C853] rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow duration-300">
-                <Flag className="w-5 h-5 text-white" />
-              </motion.div>
-              <span className="text-2xl font-bold text-[#00C853]">CityVoice</span>
+            <Link href="/feed" className="text-slate-700 hover:text-slate-900 text-sm font-medium px-2 py-1">
+              Feed
             </Link>
-          </motion.div>
+          </div>
 
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.2 }} className="flex items-center gap-4">
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link href={isLoggedIn ? "/map" : "/login"} className="group relative inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-xl font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
-                <motion.div className="absolute inset-0 bg-red-700" initial={{ x: '-100%' }} whileHover={{ x: 0 }} transition={{ duration: 0.3 }} />
-                <AlertCircle className="w-5 h-5 relative z-10 group-hover:rotate-12 transition-transform duration-300" />
-                <span className="relative z-10">Report an Issue</span>
-              </Link>
-            </motion.div>
+          {/* Center: Brand */}
+          <div className="absolute left-1/2 -translate-x-1/2">
+            <Link href="/" className="flex items-center gap-2">
+              <div className="w-9 h-9 rounded-md border border-slate-300 bg-white flex items-center justify-center">
+                <Flag className="w-5 h-5 text-slate-600" />
+              </div>
+              <span className="text-xl font-semibold text-slate-800">CityVoice</span>
+            </Link>
+          </div>
+
+          {/* Right: CTA + Profile */}
+          <div className="flex items-center gap-3">
+            <Link
+              href={isLoggedIn ? '/map' : '/login'}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm rounded-md"
+            >
+              <AlertCircle className="w-4 h-4" />
+              <span>Report Issue</span>
+            </Link>
 
             <div className="relative" ref={profileRef}>
-              <motion.button onClick={() => setIsProfileOpen(!isProfileOpen)} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className={`w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300 ${isLoggedIn ? 'bg-[#2979FF] ring-2 ring-[#2979FF]/30 ring-offset-2' : 'bg-[#E0E0E0] hover:bg-[#757575]'}`}>
+              <button
+                onClick={() => setIsProfileOpen((v) => !v)}
+                className="w-9 h-9 rounded-full bg-slate-200 hover:bg-slate-300 flex items-center justify-center"
+              >
                 {isLoggedIn ? (
-                  <div className="w-full h-full rounded-full overflow-hidden flex items-center justify-center bg-[#2979FF] text-white font-semibold text-lg">U</div>
+                  <span className="text-slate-700 text-sm font-semibold">U</span>
                 ) : (
-                  <User className="w-6 h-6 text-white" />
+                  <User className="w-5 h-5 text-slate-600" />
                 )}
-                {isLoggedIn && (
-                  <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full">
-                    <motion.div className="absolute inset-0 bg-green-500 rounded-full" animate={{ scale: [1, 1.5, 1], opacity: [1, 0, 1] }} transition={{ duration: 2, repeat: Infinity }} />
-                  </motion.div>
-                )}
-              </motion.button>
+              </button>
 
-              <AnimatePresence>
-                {isProfileOpen && (
-                  <motion.div initial={{ opacity: 0, y: -10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -10, scale: 0.95 }} transition={{ duration: 0.2 }} className="absolute right-0 mt-3 w-64 bg-white rounded-2xl shadow-2xl border border-[#E0E0E0] overflow-hidden">
-                    {isLoggedIn ? (
-                      <>
-                        <div className="px-5 py-4 border-b border-[#E0E0E0] bg-linear-to-br from-[#F8F9FA] to-white">
-                          <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-full bg-linear-to-br from-[#2979FF] to-[#2979FF] flex items-center justify-center text-white font-bold text-lg shadow-md">U</div>
-                            <div>
-                              <p className="text-sm font-bold text-[#212121]">John Doe</p>
-                              <p className="text-xs text-[#757575]">john@example.com</p>
-                            </div>
+              {isProfileOpen && (
+                <div className="absolute right-0 mt-2 w-56 bg-white border border-slate-200 rounded-md shadow-sm overflow-hidden">
+                  {isLoggedIn ? (
+                    <div>
+                      <div className="px-4 py-3 border-b border-slate-200">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center text-slate-700 text-sm font-semibold">
+                            U
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-slate-800">John Doe</p>
+                            <p className="text-xs text-slate-500">john@example.com</p>
                           </div>
                         </div>
-                        <div className="py-2">
-                          {profileMenuItems.map((item, index) => (
-                            <Link 
-                              key={index} 
-                              href={item.href} 
-                              className={`flex items-center justify-between px-5 py-3 transition-all duration-200 group ${
-                                index === 0 
-                                  ? 'text-[#00C853] hover:bg-[#69F0AE]/10 font-semibold' 
-                                  : 'text-[#212121] hover:bg-[#F8F9FA]'
-                              }`}
-                              onClick={() => setIsProfileOpen(false)}
-                            >
-                              <div className="flex items-center gap-3">
-                                <span className={`${index === 0 ? 'text-blue-600' : 'text-slate-500 group-hover:text-blue-600'} transition-colors duration-200`}>
-                                  {item.icon}
-                                </span>
-                                <span className="text-sm font-medium">{item.label}</span>
-                              </div>
-                              {item.count !== undefined && (
-                                <span className="text-xs font-semibold px-2 py-1 bg-slate-100 text-slate-600 rounded-full group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors duration-200">
-                                  {item.count}
-                                </span>
-                              )}
-                            </Link>
-                          ))}
-                        </div>
-                        <div className="border-t border-slate-100 py-2">
-                          <button onClick={() => setIsLoggedIn(false)} className="flex items-center gap-3 px-5 py-3 text-red-600 hover:bg-red-50 transition-colors duration-200 w-full group">
-                            <LogOut className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-200" />
-                            <span className="text-sm font-medium">Logout</span>
-                          </button>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div className="px-5 py-4 border-b border-[#E0E0E0]">
-                          <div className="flex items-center gap-3">
-                            <div className="w-12 h-12 rounded-full bg-linear-to-br from-[#E0E0E0] to-[#E0E0E0] flex items-center justify-center"><User className="w-6 h-6 text-[#757575]" /></div>
-                            <div>
-                              <p className="text-sm font-bold text-[#212121]">Welcome!</p>
-                              <p className="text-xs text-[#757575]">Login to access features</p>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="py-2">
-                          <div className="px-5 py-3 mb-2">
-                            <p className="text-xs text-[#757575] mb-3">Available after login:</p>
-                            <ul className="space-y-2">
-                              <li className="flex items-center gap-2 text-xs text-[#757575]">
-                                <AlertCircle className="w-3 h-3" />
-                                <span>Add New Issue</span>
-                              </li>
-                              <li className="flex items-center gap-2 text-xs text-[#757575]">
-                                <FileText className="w-3 h-3" />
-                                <span>Track Reported Issues</span>
-                              </li>
-                              <li className="flex items-center gap-2 text-xs text-[#757575]">
-                                <CheckCircle className="w-3 h-3" />
-                                <span>View Verified Issues</span>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                        <div className="border-t border-slate-100 py-2">
-                          <Link href="/login" className="flex items-center gap-3 px-5 py-3 text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200 group mx-3 rounded-lg" onClick={() => setIsProfileOpen(false)}>
-                            <LogIn className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
-                            <span className="text-sm font-semibold">Login / Sign Up</span>
+                      </div>
+
+                      <div className="py-1">
+                        {menuItems.map((item, i) => (
+                          <Link
+                            key={i}
+                            href={item.href}
+                            className="flex items-center justify-between px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
+                            onClick={() => setIsProfileOpen(false)}
+                          >
+                            <span className="flex items-center gap-2">
+                              <span className="text-slate-500">{item.icon}</span>
+                              {item.label}
+                            </span>
+                            {item.count !== undefined && (
+                              <span className="text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                                {item.count}
+                              </span>
+                            )}
                           </Link>
+                        ))}
+                      </div>
+
+                      <div className="border-t border-slate-200 py-1">
+                        <button
+                          onClick={() => {
+                            setIsLoggedIn(false);
+                            setIsProfileOpen(false);
+                          }}
+                          className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Logout
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <div className="px-4 py-3 border-b border-slate-200">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center">
+                            <User className="w-5 h-5 text-slate-600" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-slate-800">Welcome!</p>
+                            <p className="text-xs text-slate-500">Login to access features</p>
+                          </div>
                         </div>
-                      </>
-                    )}
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                      </div>
+                      <div className="py-1">
+                        <ul className="px-4 py-2 space-y-1">
+                          <li className="text-xs text-slate-500 flex items-center gap-2"><AlertCircle className="w-3 h-3" /> Add New Issue</li>
+                          <li className="text-xs text-slate-500 flex items-center gap-2"><FileText className="w-3 h-3" /> Track Reports</li>
+                          <li className="text-xs text-slate-500 flex items-center gap-2"><CheckCircle className="w-3 h-3" /> View Verified</li>
+                        </ul>
+                      </div>
+                      <div className="border-t border-slate-200 py-1">
+                        <Link
+                          href="/login"
+                          onClick={() => setIsProfileOpen(false)}
+                          className="mx-4 mb-2 inline-flex items-center gap-2 px-4 py-2 bg-slate-700 hover:bg-slate-800 text-white text-sm rounded-md"
+                        >
+                          <LogIn className="w-4 h-4" />
+                          Login / Sign Up
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
-      <motion.div className="h-0.5 bg-linear-to-r from-transparent via-[#00C853] to-transparent" initial={{ scaleX: 0 }} animate={{ scaleX: isScrolled ? 1 : 0 }} transition={{ duration: 0.5 }} />
-    </motion.nav>
+    </nav>
   );
 }
