@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Shield, Users, Zap, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import Aurora from './Iridescence';
 
 const trustIndicators = [
@@ -21,6 +22,13 @@ const trustIndicators = [
 ];
 
 export default function CTA() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const authState = localStorage.getItem('isLoggedIn');
+    setIsLoggedIn(authState === 'true');
+  }, []);
+
   return (
     <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-linear-to-b from-white via-blue-50/20 to-white overflow-hidden border-t border-slate-200/50">
       {/* Subtle gradient orbs */}
@@ -80,7 +88,10 @@ export default function CTA() {
             transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
           >
-            <Link href="/map" className="group inline-flex items-center gap-2 px-8 py-4 bg-linear-to-r from-violet-600 to-indigo-600 text-white rounded-2xl hover:from-violet-700 hover:to-indigo-700 transition-all duration-300 font-semibold shadow-lg shadow-violet-500/30 hover:shadow-xl hover:shadow-violet-500/40 hover:-translate-y-0.5">
+            <Link 
+              href={isLoggedIn ? "/map" : "/login"}
+              className="group inline-flex items-center gap-2 px-8 py-4 bg-linear-to-r from-violet-600 to-indigo-600 text-white rounded-2xl hover:from-violet-700 hover:to-indigo-700 transition-all duration-300 font-semibold shadow-lg shadow-violet-500/30 hover:shadow-xl hover:shadow-violet-500/40 hover:-translate-y-0.5"
+            >
               <Shield className="w-5 h-5" />
               Get Started Free
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />

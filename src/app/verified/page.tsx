@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
+import AuthGuard from '@/components/AuthGuard';
 
 interface Issue {
   id: string;
@@ -183,9 +184,9 @@ export default function VerifiedIssuesPage() {
   };
 
   return (
-    <>
+    <AuthGuard>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 pt-16">
+      <div className="min-h-screen bg-linear-to-br from-emerald-50 via-teal-50 to-cyan-50 pt-16">
         {/* Subtle background pattern */}
         <div className="absolute inset-0 opacity-[0.015] pointer-events-none">
           <div className="absolute inset-0" style={{
@@ -399,6 +400,6 @@ export default function VerifiedIssuesPage() {
           )}
         </div>
       </div>
-    </>
+    </AuthGuard>
   );
 }

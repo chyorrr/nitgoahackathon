@@ -2,7 +2,8 @@
 
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Camera, MapPin, Smartphone, Eye, BarChart3, Shield, ArrowRight } from 'lucide-react';
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
+import Link from 'next/link';
 import Aurora from './Iridescence';
 
 const features = [
@@ -58,6 +59,13 @@ const features = [
 
 export default function Features() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const authState = localStorage.getItem('isLoggedIn');
+    setIsLoggedIn(authState === 'true');
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start end", "end start"]
@@ -162,11 +170,14 @@ export default function Features() {
           transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
           className="text-center mt-16"
         >
-          <button className="group inline-flex items-center gap-2 px-8 py-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-500 font-semibold shadow-lg hover:shadow-xl">
+          <Link 
+            href={isLoggedIn ? "/map" : "/login"}
+            className="group inline-flex items-center gap-2 px-8 py-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-500 font-semibold shadow-lg hover:shadow-xl"
+          >
             <Smartphone className="w-5 h-5" />
             Start Reporting Issues
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-500" />
-          </button>
+          </Link>
         </motion.div>
       </div>
     </section>

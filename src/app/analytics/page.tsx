@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
+import AuthGuard from '@/components/AuthGuard';
 
 interface WardData {
   name: string;
@@ -65,13 +66,13 @@ export default function AnalyticsPage() {
   const resolutionRate = ((stats.resolved / stats.totalIssues) * 100).toFixed(1);
 
   return (
-    <>
+    <AuthGuard>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 pt-16">
+      <div className="min-h-screen bg-linear-to-br from-indigo-50 via-purple-50 to-pink-50 pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">Impact Reports & Analytics</h1>
+            <h1 className="text-3xl font-bold bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">Impact Reports & Analytics</h1>
             <p className="text-zinc-700">
               Transparency dashboard showing civic engagement metrics and municipality performance
             </p>
@@ -86,7 +87,7 @@ export default function AnalyticsPage() {
                   onClick={() => setTimeframe(period)}
                   className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${
                     timeframe === period
-                      ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md'
+                      ? 'bg-linear-to-r from-purple-600 to-pink-600 text-white shadow-md'
                       : 'text-zinc-600 hover:bg-purple-50'
                   }`}
                 >
@@ -110,7 +111,7 @@ export default function AnalyticsPage() {
               className="bg-white/80 backdrop-blur-sm rounded-xl border border-purple-100 p-6 shadow-md hover:shadow-lg transition-shadow"
             >
               <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-xl flex items-center justify-center shadow-sm">
+                <div className="w-12 h-12 bg-linear-to-br from-blue-100 to-cyan-100 rounded-xl flex items-center justify-center shadow-sm">
                   <BarChart3 className="w-6 h-6 text-blue-600" />
                 </div>
                 <span className="text-xs font-semibold text-emerald-600 bg-emerald-100 px-2 py-1 rounded-full">
@@ -128,7 +129,7 @@ export default function AnalyticsPage() {
               className="bg-white/80 backdrop-blur-sm rounded-xl border border-purple-100 p-6 shadow-md hover:shadow-lg transition-shadow"
             >
               <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-100 to-green-100 rounded-xl flex items-center justify-center shadow-sm">
+                <div className="w-12 h-12 bg-linear-to-br from-emerald-100 to-green-100 rounded-xl flex items-center justify-center shadow-sm">
                   <CheckCircle2 className="w-6 h-6 text-emerald-600" />
                 </div>
                 <span className="text-xs font-semibold text-emerald-600 bg-emerald-100 px-2 py-1 rounded-full">
@@ -146,7 +147,7 @@ export default function AnalyticsPage() {
               className="bg-white/80 backdrop-blur-sm rounded-xl border border-purple-100 p-6 shadow-md hover:shadow-lg transition-shadow"
             >
               <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-amber-100 to-orange-100 rounded-xl flex items-center justify-center shadow-sm">
+                <div className="w-12 h-12 bg-linear-to-br from-amber-100 to-orange-100 rounded-xl flex items-center justify-center shadow-sm">
                   <Clock className="w-6 h-6 text-amber-600" />
                 </div>
                 <span className="text-xs font-semibold text-emerald-600 bg-emerald-100 px-2 py-1 rounded-full">
@@ -164,7 +165,7 @@ export default function AnalyticsPage() {
               className="bg-white/80 backdrop-blur-sm rounded-xl border border-purple-100 p-6 shadow-md hover:shadow-lg transition-shadow"
             >
               <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-pink-100 rounded-xl flex items-center justify-center shadow-sm">
+                <div className="w-12 h-12 bg-linear-to-br from-purple-100 to-pink-100 rounded-xl flex items-center justify-center shadow-sm">
                   <Users className="w-6 h-6 text-purple-600" />
                 </div>
                 <span className="text-xs font-semibold text-emerald-600 bg-emerald-100 px-2 py-1 rounded-full">
@@ -180,7 +181,7 @@ export default function AnalyticsPage() {
             {/* Category Distribution */}
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-purple-100 p-8 shadow-md hover:shadow-lg transition-shadow">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Issues by Category</h2>
+                <h2 className="text-xl font-bold bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Issues by Category</h2>
                 <PieChart className="w-5 h-5 text-purple-400" />
               </div>
               
@@ -196,7 +197,7 @@ export default function AnalyticsPage() {
                         initial={{ width: 0 }}
                         animate={{ width: `${item.percentage}%` }}
                         transition={{ delay: index * 0.1, duration: 0.5 }}
-                        className="absolute top-0 left-0 h-full bg-gradient-to-r from-purple-500 via-pink-500 to-rose-500 rounded-full shadow-sm"
+                        className="absolute top-0 left-0 h-full bg-linear-to-r from-purple-500 via-pink-500 to-rose-500 rounded-full shadow-sm"
                       />
                     </div>
                     <div className="flex items-center justify-between mt-1">
@@ -210,7 +211,7 @@ export default function AnalyticsPage() {
             {/* Performance Indicators */}
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-purple-100 p-8 shadow-md hover:shadow-lg transition-shadow">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Performance Metrics</h2>
+                <h2 className="text-xl font-bold bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Performance Metrics</h2>
                 <Activity className="w-5 h-5 text-purple-400" />
               </div>
 
@@ -223,7 +224,7 @@ export default function AnalyticsPage() {
                   <div className="relative w-full h-2 bg-zinc-100 rounded-full overflow-hidden">
                     <div
                       style={{ width: `${(stats.citizenSatisfaction / 5) * 100}%` }}
-                      className="absolute top-0 left-0 h-full bg-gradient-to-r from-emerald-500 to-green-500 rounded-full shadow-sm"
+                      className="absolute top-0 left-0 h-full bg-linear-to-r from-emerald-500 to-green-500 rounded-full shadow-sm"
                     />
                   </div>
                 </div>
@@ -236,7 +237,7 @@ export default function AnalyticsPage() {
                   <div className="relative w-full h-2 bg-zinc-100 rounded-full overflow-hidden">
                     <div
                       style={{ width: `${stats.responseRate}%` }}
-                      className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full shadow-sm"
+                      className="absolute top-0 left-0 h-full bg-linear-to-r from-blue-500 to-cyan-500 rounded-full shadow-sm"
                     />
                   </div>
                 </div>
@@ -249,18 +250,18 @@ export default function AnalyticsPage() {
                   <div className="relative w-full h-2 bg-zinc-100 rounded-full overflow-hidden">
                     <div
                       style={{ width: `${resolutionRate}%` }}
-                      className="absolute top-0 left-0 h-full bg-gradient-to-r from-purple-500 to-pink-500 rounded-full shadow-sm"
+                      className="absolute top-0 left-0 h-full bg-linear-to-r from-purple-500 to-pink-500 rounded-full shadow-sm"
                     />
                   </div>
                 </div>
 
                 <div className="pt-4 border-t border-zinc-200">
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-cyan-50 rounded-xl border border-blue-100">
+                    <div className="text-center p-4 bg-linear-to-br from-blue-50 to-cyan-50 rounded-xl border border-blue-100">
                       <p className="text-2xl font-bold text-blue-600">{stats.inProgress}</p>
                       <p className="text-xs text-zinc-600 mt-1">In Progress</p>
                     </div>
-                    <div className="text-center p-4 bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl border border-amber-100">
+                    <div className="text-center p-4 bg-linear-to-br from-amber-50 to-yellow-50 rounded-xl border border-amber-100">
                       <p className="text-2xl font-bold text-amber-600">{stats.pending}</p>
                       <p className="text-xs text-zinc-600 mt-1">Pending</p>
                     </div>
@@ -273,7 +274,7 @@ export default function AnalyticsPage() {
           {/* Ward-wise Performance */}
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-purple-100 p-8 shadow-md hover:shadow-lg transition-shadow">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Ward-wise Performance</h2>
+              <h2 className="text-xl font-bold bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Ward-wise Performance</h2>
               <MapPin className="w-5 h-5 text-purple-400" />
             </div>
 
@@ -296,7 +297,7 @@ export default function AnalyticsPage() {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.05 }}
-                      className="border-b border-zinc-100 hover:bg-gradient-to-r hover:from-purple-50/50 hover:to-pink-50/50 transition-all"
+                      className="border-b border-zinc-100 hover:bg-linear-to-r hover:from-purple-50/50 hover:to-pink-50/50 transition-all"
                     >
                       <td className="py-4 px-4">
                         <span className="font-semibold text-zinc-900">{ward.name}</span>
@@ -338,7 +339,7 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Public Data Note */}
-          <div className="mt-8 bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6 shadow-sm">
+          <div className="mt-8 bg-linear-to-r from-blue-50 via-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6 shadow-sm">
             <div className="flex items-start gap-3">
               <Activity className="w-5 h-5 text-purple-600 mt-0.5 shrink-0" />
               <div>
@@ -353,6 +354,6 @@ export default function AnalyticsPage() {
           </div>
         </div>
       </div>
-    </>
+    </AuthGuard>
   );
 }

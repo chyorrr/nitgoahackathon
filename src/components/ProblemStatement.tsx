@@ -43,11 +43,11 @@ export default function ProblemStatement() {
   const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
 
   return (
-    <section ref={containerRef} className="relative py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50 overflow-hidden">
+    <section ref={containerRef} className="relative py-24 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-rose-50 via-pink-50 to-purple-50 overflow-hidden">
       {/* Subtle gradient orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-br from-rose-200/30 to-pink-200/30 rounded-full blur-3xl" />
-        <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-purple-200/30 to-violet-200/30 rounded-full blur-3xl" />
+        <div className="absolute top-20 left-10 w-96 h-96 bg-linear-to-br from-rose-200/30 to-pink-200/30 rounded-full blur-3xl" />
+        <div className="absolute bottom-20 right-10 w-96 h-96 bg-linear-to-br from-purple-200/30 to-violet-200/30 rounded-full blur-3xl" />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">

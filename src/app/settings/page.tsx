@@ -2,11 +2,12 @@
 
 import Navbar from '@/components/Navbar';
 import LocationSettings from '@/components/LocationSettings';
+import AuthGuard from '@/components/AuthGuard';
 import { User, Bell, Shield, Settings as SettingsIcon } from 'lucide-react';
 
 export default function SettingsPage() {
   return (
-    <>
+    <AuthGuard>
       <Navbar />
       <div className="min-h-screen bg-slate-50 pt-16">
         <div className="max-w-4xl mx-auto px-4 py-8">
@@ -75,6 +76,6 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
-    </>
+    </AuthGuard>
   );
 }

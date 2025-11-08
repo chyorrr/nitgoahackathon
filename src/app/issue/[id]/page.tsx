@@ -20,6 +20,7 @@ import {
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
+import AuthGuard from '@/components/AuthGuard';
 
 interface Comment {
   id: string;
@@ -238,9 +239,9 @@ export default function IssuePage() {
   };
 
   return (
-    <>
+    <AuthGuard>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-violet-50 pt-16">
+      <div className="min-h-screen bg-linear-to-br from-blue-50 via-indigo-50 to-violet-50 pt-16">
         {/* Subtle background pattern */}
         <div className="absolute inset-0 opacity-[0.015] pointer-events-none">
           <div className="absolute inset-0" style={{
@@ -488,6 +489,6 @@ export default function IssuePage() {
           </div>
         </div>
       </div>
-    </>
+    </AuthGuard>
   );
 }

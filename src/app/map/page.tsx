@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, ChevronDown, MapPin, X, Upload, Camera } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import MapNavbar from '@/components/MapNavbar';
+import AuthGuard from '@/components/AuthGuard';
 import type { MapComponentProps } from '@/components/MapComponent';
 
 // Dynamically import the Map component to avoid SSR issues
@@ -72,10 +73,10 @@ export default function MapPage() {
   }, []);
 
   return (
-    <>
+    <AuthGuard>
       <MapNavbar onReportIssue={() => setShowReportModal(true)} />
       
-      <div className="fixed inset-0 pt-16 bg-gradient-to-br from-slate-50 via-gray-50 to-zinc-50">
+      <div className="fixed inset-0 pt-16 bg-linear-to-br from-slate-50 via-gray-50 to-zinc-50">
         {/* Main Content Container */}
         <div className="h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col">
           {/* Header Section */}
@@ -299,6 +300,6 @@ export default function MapPage() {
           </div>
         </div>
       </div>
-    </>
+    </AuthGuard>
   );
 }

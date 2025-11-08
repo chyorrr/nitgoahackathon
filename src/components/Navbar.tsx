@@ -3,6 +3,7 @@
 import { AlertCircle, CheckCircle, FileText, Flag, LogIn, LogOut, User, Settings, Shield } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
+import { useScroll, useTransform, motion } from 'framer-motion';
 
 export default function Navbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -58,7 +59,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="fixed top-0 inset-x-0 z-50 bg-white/70 backdrop-blur-xl border-b border-violet-200/40 shadow-sm">
+    <motion.nav style={{ backgroundColor }} className="fixed top-0 inset-x-0 z-50 backdrop-blur-xl border-b border-violet-200/40 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="h-16 flex items-center justify-center">
           {/* Left: Navigation Links */}
@@ -69,12 +70,14 @@ export default function Navbar() {
             >
               Home
             </Link>
-            <Link 
-              href="/feed" 
-              className="text-zinc-700 hover:text-indigo-600 hover:bg-indigo-50/80 text-sm font-medium px-4 py-2 rounded-xl transition-all duration-500"
-            >
-              Feed
-            </Link>
+            {isLoggedIn && (
+              <Link 
+                href="/feed" 
+                className="text-zinc-700 hover:text-indigo-600 hover:bg-indigo-50/80 text-sm font-medium px-4 py-2 rounded-xl transition-all duration-500"
+              >
+                Feed
+              </Link>
+            )}
           </div>
 
           {/* Center: Brand Logo */}
@@ -98,10 +101,12 @@ export default function Navbar() {
             <div className="relative" ref={profileRef}>
               <button
                 onClick={() => setIsProfileOpen((v) => !v)}
-                className="w-9 h-9 rounded-xl bg-white/60 hover:bg-white/80 backdrop-blur-md flex items-center justify-center transition-all duration-500 border border-violet-200/50 hover:border-violet-300/50"
+                className="w-9 h-9 rounded-xl bg-white/60 hover:bg-white/80 backdrop-blur-md flex items-center justify-center transition-all duration-500 border border-violet-200/50 hover:border-violet-300/50 overflow-hidden"
               >
                 {isLoggedIn ? (
-                  <span className="text-violet-700 text-sm font-semibold">U</span>
+                  <div className="w-full h-full bg-linear-to-br from-violet-400 to-purple-500 flex items-center justify-center">
+                    <User className="w-5 h-5 text-white" />
+                  </div>
                 ) : (
                   <User className="w-4.5 h-4.5 text-violet-600" />
                 )}
@@ -111,10 +116,10 @@ export default function Navbar() {
                 <div className="absolute right-0 mt-2 w-64 bg-white/95 backdrop-blur-sm border border-purple-200 rounded-xl shadow-xl overflow-hidden animate-scaleIn">
                   {isLoggedIn ? (
                     <div>
-                      <div className="px-4 py-3 border-b border-purple-100 bg-gradient-to-r from-purple-50 to-pink-50">
+                      <div className="px-4 py-3 border-b border-purple-100 bg-linear-to-r from-purple-50 to-pink-50">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-200 to-pink-200 flex items-center justify-center text-purple-700 text-sm font-semibold shadow-sm">
-                            U
+                          <div className="w-10 h-10 rounded-lg bg-linear-to-br from-violet-400 to-purple-500 flex items-center justify-center shadow-sm">
+                            <User className="w-6 h-6 text-white" />
                           </div>
                           <div>
                             <p className="text-sm font-medium text-zinc-900">{userName}</p>
@@ -128,7 +133,7 @@ export default function Navbar() {
                           <Link
                             key={i}
                             href={item.href}
-                            className="flex items-center justify-between px-4 py-2.5 text-sm text-zinc-700 hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 transition-all"
+                            className="flex items-center justify-between px-4 py-2.5 text-sm text-zinc-700 hover:bg-linear-to-r hover:from-purple-50 hover:to-pink-50 transition-all"
                             onClick={() => setIsProfileOpen(false)}
                           >
                             <span className="flex items-center gap-3">
@@ -136,7 +141,7 @@ export default function Navbar() {
                               {item.label}
                             </span>
                             {item.count !== undefined && (
-                              <span className="text-xs px-2 py-0.5 rounded-full bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 font-medium">
+                              <span className="text-xs px-2 py-0.5 rounded-full bg-linear-to-r from-purple-100 to-pink-100 text-purple-700 font-medium">
                                 {item.count}
                               </span>
                             )}
@@ -156,9 +161,9 @@ export default function Navbar() {
                     </div>
                   ) : (
                     <div>
-                      <div className="px-4 py-3 border-b border-purple-100 bg-gradient-to-r from-purple-50 to-pink-50">
+                      <div className="px-4 py-3 border-b border-purple-100 bg-linear-to-r from-purple-50 to-pink-50">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-200 to-pink-200 flex items-center justify-center shadow-sm">
+                          <div className="w-10 h-10 rounded-lg bg-linear-to-br from-purple-200 to-pink-200 flex items-center justify-center shadow-sm">
                             <User className="w-5 h-5 text-purple-600" />
                           </div>
                           <div>
@@ -185,6 +190,6 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-    </nav>
+    </motion.nav>
   );
 }

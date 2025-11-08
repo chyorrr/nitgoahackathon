@@ -3,12 +3,20 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, MapPin, Users } from 'lucide-react';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
 
 export default function Hero() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const authState = localStorage.getItem('isLoggedIn');
+    setIsLoggedIn(authState === 'true');
+  }, []);
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Multi-layer gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-violet-100 via-indigo-50 to-purple-100"></div>
+      <div className="absolute inset-0 bg-linear-to-br from-violet-100 via-indigo-50 to-purple-100"></div>
       
       {/* Subtle mesh pattern overlay */}
       <div className="absolute inset-0 opacity-[0.015]">
@@ -32,7 +40,7 @@ export default function Hero() {
             repeat: Infinity,
             ease: "easeInOut"
           }}
-          className="absolute -top-32 -right-32 w-[500px] h-[500px] bg-gradient-to-br from-violet-400/40 to-indigo-400/40 rounded-full blur-3xl"
+          className="absolute -top-32 -right-32 w-[500px] h-[500px] bg-linear-to-br from-violet-400/40 to-indigo-400/40 rounded-full blur-3xl"
         />
         
         <motion.div
@@ -48,7 +56,7 @@ export default function Hero() {
             ease: "easeInOut",
             delay: 1
           }}
-          className="absolute -bottom-32 -left-32 w-[500px] h-[500px] bg-gradient-to-tr from-pink-400/40 to-rose-400/40 rounded-full blur-3xl"
+          className="absolute -bottom-32 -left-32 w-[500px] h-[500px] bg-linear-to-tr from-pink-400/40 to-rose-400/40 rounded-full blur-3xl"
         />
         
         <motion.div
@@ -63,7 +71,7 @@ export default function Hero() {
             ease: "easeInOut",
             delay: 2
           }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-gradient-to-br from-blue-300/30 to-cyan-300/30 rounded-full blur-3xl"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-linear-to-br from-blue-300/30 to-cyan-300/30 rounded-full blur-3xl"
         />
         
         {/* Additional accent orbs */}
@@ -78,7 +86,7 @@ export default function Hero() {
             ease: "easeInOut",
             delay: 3
           }}
-          className="absolute top-1/4 right-1/4 w-64 h-64 bg-gradient-to-br from-purple-400/30 to-fuchsia-400/30 rounded-full blur-3xl"
+          className="absolute top-1/4 right-1/4 w-64 h-64 bg-linear-to-br from-purple-400/30 to-fuchsia-400/30 rounded-full blur-3xl"
         />
       </div>
 
@@ -113,7 +121,7 @@ export default function Hero() {
           className="text-5xl sm:text-6xl lg:text-7xl font-bold text-zinc-900 mb-6 leading-tight tracking-tight"
         >
           Report Issues.<br />
-          <span className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">Track Progress.</span>
+          <span className="bg-linear-to-r from-violet-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">Track Progress.</span>
         </motion.h1>
 
         {/* Description */}
@@ -134,7 +142,7 @@ export default function Hero() {
           className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
         >
           <Link 
-            href="/login"
+            href={isLoggedIn ? "/map" : "/login"}
             className="group inline-flex items-center gap-2 px-8 py-4 bg-red-500/90 hover:bg-red-600 text-white rounded-2xl font-semibold shadow-md hover:shadow-lg backdrop-blur-sm transition-all duration-500 ease-out hover:-translate-y-1"
           >
             <MapPin className="w-5 h-5 transition-transform duration-500 group-hover:scale-110" />

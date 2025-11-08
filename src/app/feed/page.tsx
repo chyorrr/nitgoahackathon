@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowBigUp, 
@@ -18,6 +18,7 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
+import AuthGuard from '@/components/AuthGuard';
 
 interface Issue {
   id: string;
@@ -138,10 +139,21 @@ export default function FeedPage() {
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [showSortDropdown, setShowSortDropdown] = useState(false);
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Check auth status
+  useEffect(() => {
+    const authState = localStorage.getItem('isLoggedIn');
+    setIsLoggedIn(authState === 'true');
+  }, []);
 
   const categories = ['All', 'Potholes', 'Street Lights', 'Garbage', 'Water Supply', 'Others'];
 
   const handleUpvote = (issueId: string) => {
+    if (!isLoggedIn) {
+      alert('Please login to upvote issues');
+      return;
+    }
     setIssues(issues.map(issue => {
       if (issue.id === issueId) {
         return {
@@ -181,13 +193,13 @@ export default function FeedPage() {
     });
 
   return (
-    <>
+    <AuthGuard>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 pt-16">
+      <div className="min-h-screen bg-linear-to-br from-blue-50 via-purple-50 to-pink-50 pt-16">
         <div className="max-w-3xl mx-auto px-4 py-8">
           {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent mb-2">Community Feed</h1>
+            <h1 className="text-3xl font-bold bg-linear-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent mb-2">Community Feed</h1>
             <p className="text-zinc-700">Discover and support issues reported by your community</p>
           </div>
 
@@ -198,7 +210,7 @@ export default function FeedPage() {
               className="group bg-white/80 backdrop-blur-sm rounded-xl border border-purple-200 p-4 shadow-sm hover:shadow-lg hover:border-purple-300 hover:bg-white transition-all hover-lift"
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center group-hover:from-purple-200 group-hover:to-pink-200 transition-colors">
+                <div className="w-10 h-10 rounded-lg bg-linear-to-br from-purple-100 to-pink-100 flex items-center justify-center group-hover:from-purple-200 group-hover:to-pink-200 transition-colors">
                   <FileText className="w-5 h-5 text-purple-600" />
                 </div>
                 <div>
@@ -213,7 +225,7 @@ export default function FeedPage() {
               className="group bg-white/80 backdrop-blur-sm rounded-xl border border-emerald-200 p-4 shadow-sm hover:shadow-lg hover:border-emerald-300 hover:bg-white transition-all hover-lift"
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-100 to-cyan-100 flex items-center justify-center group-hover:from-emerald-200 group-hover:to-cyan-200 transition-colors">
+                <div className="w-10 h-10 rounded-lg bg-linear-to-br from-emerald-100 to-cyan-100 flex items-center justify-center group-hover:from-emerald-200 group-hover:to-cyan-200 transition-colors">
                   <Shield className="w-5 h-5 text-emerald-600" />
                 </div>
                 <div>
@@ -231,7 +243,7 @@ export default function FeedPage() {
               <div className="relative">
                 <button
                   onClick={() => setShowSortDropdown(!showSortDropdown)}
-                  className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-300 rounded-lg hover:border-purple-400 hover:from-purple-100 hover:to-pink-100 transition-all text-sm font-medium"
+                  className="flex items-center gap-2 px-4 py-2.5 bg-linear-to-r from-purple-50 to-pink-50 border border-purple-300 rounded-lg hover:border-purple-400 hover:from-purple-100 hover:to-pink-100 transition-all text-sm font-medium"
                 >
                   {sortBy === 'trending' ? (
                     <>
@@ -371,11 +383,15 @@ export default function FeedPage() {
                     {/* Upvote */}
                     <button
                       onClick={() => handleUpvote(issue.id)}
+                      disabled={!isLoggedIn}
                       className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
                         issue.hasUpvoted
                           ? 'bg-red-50 text-red-600'
+                          : !isLoggedIn
+                          ? 'opacity-50 cursor-not-allowed text-zinc-400'
                           : 'hover:bg-zinc-50 text-zinc-600'
                       }`}
+                      title={!isLoggedIn ? 'Login to upvote' : ''}
                     >
                       <ArrowBigUp
                         className={`w-5 h-5 ${issue.hasUpvoted ? 'fill-red-600' : ''}`}
@@ -384,10 +400,24 @@ export default function FeedPage() {
                     </button>
 
                     {/* Comments */}
-                    <button className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-zinc-50 text-zinc-600 transition-colors">
+                    <Link
+                      href={isLoggedIn ? `/issue/${issue.id}` : '/login'}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
+                        !isLoggedIn
+                          ? 'opacity-50 cursor-not-allowed text-zinc-400'
+                          : 'hover:bg-zinc-50 text-zinc-600'
+                      }`}
+                      title={!isLoggedIn ? 'Login to comment' : ''}
+                      onClick={(e) => {
+                        if (!isLoggedIn) {
+                          e.preventDefault();
+                          alert('Please login to view and add comments');
+                        }
+                      }}
+                    >
                       <MessageCircle className="w-5 h-5" />
                       <span className="text-sm font-semibold">{issue.comments}</span>
-                    </button>
+                    </Link>
 
                     {/* Share */}
                     <button className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-zinc-50 text-zinc-600 transition-colors">
@@ -421,6 +451,6 @@ export default function FeedPage() {
           )}
         </div>
       </div>
-    </>
+    </AuthGuard>
   );
 }
