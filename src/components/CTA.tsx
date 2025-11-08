@@ -22,19 +22,12 @@ const trustIndicators = [
 
 export default function CTA() {
   return (
-    <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-transparent overflow-hidden border-t border-[#E0E0E0]">
-      {/* Aurora Background */}
-      <div className="absolute inset-0 pointer-events-none opacity-25">
-        <Aurora 
-          colorStops={['#2979FF', '#4A90E2', '#2979FF']}
-          amplitude={1.8}
-          blend={0.5}
-          speed={0.4}
-        />
+    <section className="relative py-24 px-4 sm:px-6 lg:px-8 bg-linear-to-b from-white via-blue-50/20 to-white overflow-hidden border-t border-slate-200/50">
+      {/* Subtle gradient orbs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-linear-to-br from-cyan-200/20 to-blue-200/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-linear-to-br from-indigo-200/20 to-purple-200/20 rounded-full blur-3xl" />
       </div>
-
-      {/* Subtle overlay for better text readability */}
-      <div className="absolute inset-0 bg-linear-to-b from-white/85 via-white/60 to-white/85 pointer-events-none z-1"></div>
 
       <div className="max-w-4xl mx-auto relative z-10 text-center">
         <motion.div
@@ -51,8 +44,8 @@ export default function CTA() {
             transition={{ duration: 0.6 }}
             className="mb-8"
           >
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-[#E0E0E0] rounded-full text-[#757575] text-sm font-medium shadow-sm">
-              <CheckCircle className="w-4 h-4 text-[#00C853]" />
+            <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-linear-to-r from-emerald-100 to-green-100 border border-emerald-200/60 rounded-full text-emerald-900 text-sm font-semibold shadow-sm">
+              <CheckCircle className="w-4 h-4 text-emerald-600" />
               Join the Movement
             </div>
           </motion.div>
@@ -87,16 +80,16 @@ export default function CTA() {
             transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
           >
-            <button className="group inline-flex items-center gap-2 px-8 py-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-all duration-500 font-semibold shadow-lg hover:shadow-xl">
+            <Link href="/map" className="group inline-flex items-center gap-2 px-8 py-4 bg-linear-to-r from-violet-600 to-indigo-600 text-white rounded-2xl hover:from-violet-700 hover:to-indigo-700 transition-all duration-300 font-semibold shadow-lg shadow-violet-500/30 hover:shadow-xl hover:shadow-violet-500/40 hover:-translate-y-0.5">
               <Shield className="w-5 h-5" />
               Get Started Free
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-500" />
-            </button>
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+            </Link>
             
-            <button className="group inline-flex items-center gap-2 px-8 py-4 bg-white text-[#212121] border border-[#E0E0E0] rounded-lg hover:bg-[#F8F9FA] transition-all duration-500 font-semibold shadow-sm">
+            <Link href="#how-it-works" className="group inline-flex items-center gap-2 px-8 py-4 bg-white/80 text-zinc-900 border border-violet-200 rounded-2xl hover:bg-white transition-all duration-300 font-semibold shadow-sm hover:shadow-md backdrop-blur-sm hover:-translate-y-0.5">
               <Zap className="w-5 h-5" />
               Watch Demo
-            </button>
+            </Link>
           </motion.div>
 
           {/* Trust indicators */}
@@ -105,7 +98,7 @@ export default function CTA() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 1, delay: 0.8, ease: "easeOut" }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-8 text-[#757575]500 text-sm"
+            className="flex flex-col sm:flex-row items-center justify-center gap-8 text-zinc-600 text-sm"
           >
             {trustIndicators.map((indicator, index) => (
               <motion.div
@@ -114,12 +107,12 @@ export default function CTA() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: 0.9 + index * 0.1, ease: "easeOut" }}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 px-4 py-2 bg-white/60 backdrop-blur-sm rounded-xl border border-slate-200/60 shadow-sm"
               >
-                <div className="text-[#757575]">
+                <div className="text-violet-600">
                   {indicator.icon}
                 </div>
-                <span className="font-medium">
+                <span className="font-semibold text-zinc-700">
                   {indicator.text}
                 </span>
               </motion.div>

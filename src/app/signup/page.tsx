@@ -35,6 +35,12 @@ export default function SignUpPage() {
       }
       setCaptchaVerified(true);
       console.log('Sign up submitted:', formData);
+      
+      // Save auth state to localStorage
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('userName', formData.fullName);
+      localStorage.setItem('userEmail', formData.email);
+      
       // Redirect to map page after successful signup
       router.push('/map');
     } else {
