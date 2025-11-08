@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from 'framer-motion';
 import { AlertCircle, CheckCircle, FileText, Flag, LogIn, LogOut, User, Settings } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
@@ -8,13 +9,7 @@ export default function Navbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
-  const { scrollY } = useScroll();
-  
-  const backgroundColor = useTransform(
-    scrollY,
-    [0, 100],
-    ['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.95)']
-  );
+  // Remove unused scroll animation for now
 
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
@@ -55,16 +50,16 @@ export default function Navbar() {
               </div>
               <span className="text-xl font-semibold text-slate-800">CityVoice</span>
             </Link>
-          </motion.div>
+          </div>
 
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.2 }} className="flex items-center gap-4">
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <div className="flex items-center gap-4">
+            <div>
               <Link href={isLoggedIn ? "/map" : "/login"} className="group relative inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-xl font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden">
                 <motion.div className="absolute inset-0 bg-red-700" initial={{ x: '-100%' }} whileHover={{ x: 0 }} transition={{ duration: 0.3 }} />
                 <AlertCircle className="w-5 h-5 relative z-10 group-hover:rotate-12 transition-transform duration-300" />
                 <span className="relative z-10">Report an Issue</span>
               </Link>
-            </motion.div>
+            </div>
 
             <div className="relative" ref={profileRef}>
               <button
