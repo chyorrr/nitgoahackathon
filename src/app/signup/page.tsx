@@ -5,6 +5,8 @@ import { motion } from 'framer-motion';
 import { Mail, Phone, Lock, Shield, Eye, EyeOff, ArrowRight, Check, User, MapPin } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase/client'
+import { useEffect } from 'react'
 
 export default function SignUpPage() {
   const router = useRouter();
@@ -20,33 +22,69 @@ export default function SignUpPage() {
   });
   const [captchaVerified, setCaptchaVerified] = useState(false);
   const [captchaValue, setCaptchaValue] = useState('');
+  const [loading, setLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [generatedCaptcha] = useState(() => {
     // Generate random captcha
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
     return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (captchaValue === generatedCaptcha) {
-      if (formData.password !== formData.confirmPassword) {
-        alert('Passwords do not match!');
-        return;
-      }
-      setCaptchaVerified(true);
-      console.log('Sign up submitted:', formData);
-      
-      // Save auth state to localStorage
-      localStorage.setItem('isLoggedIn', 'true');
-      localStorage.setItem('userName', formData.fullName);
-      localStorage.setItem('userEmail', formData.email);
-      
-      // Redirect to map page after successful signup
-      router.push('/map');
-    } else {
-      alert('Invalid CAPTCHA. Please try again.');
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setErrorMessage(null)
+    if (captchaValue !== generatedCaptcha) {
+      alert('Invalid CAPTCHA. Please try again.')
+      return
     }
-  };
+
+    if (formData.password !== formData.confirmPassword) {
+      alert('Passwords do not match!')
+      return
+    }
+
+    setCaptchaVerified(true)
+    setLoading(true)
+
+    console.log('Attempting signup with:', { email: formData.email })
+    const { data, error } = await supabase.auth.signUp({
+      email: formData.email,
+      password: formData.password,
+      options: {
+        data: {
+          full_name: formData.fullName,
+          phone: formData.phone,
+          address: formData.address
+        }
+      }
+    })
+
+    setLoading(false)
+
+    if (error) {
+      const errorMsg = error.message
+      setErrorMessage(errorMsg)
+      console.error('Signup failed:', { error: errorMsg, code: error.status })
+      return
+    }
+
+    console.log('Signup successful:', { 
+      user: data?.user?.id,
+      confirmed: data?.user?.confirmed_at,
+      email: data?.user?.email 
+    })
+
+    try {
+      localStorage.setItem('isLoggedIn', 'true')
+      localStorage.setItem('userName', formData.fullName)
+      localStorage.setItem('userEmail', formData.email)
+    } catch (e) {
+      // ignore localStorage errors
+    }
+
+    // Note: Email confirmation may be required depending on Supabase settings
+    router.push('/map')
+  }
 
   return (
     <div className="min-h-screen pt-16 bg-linear-to-br from-[#F8F9FA] via-white to-[#69F0AE]/10 flex items-center justify-center px-4 py-8 relative overflow-hidden">
@@ -284,7 +322,13 @@ export default function SignUpPage() {
 
           {/* Social Sign Up */}
           <div className="grid grid-cols-2 gap-3">
-            <button className="flex items-center justify-center gap-2 px-4 py-2.5 border border-[#E0E0E0] rounded-lg hover:bg-slate-50 transition-all duration-300 group">
+            <button
+              type="button"
+              onClick={async () => {
+                await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: `${window.location.origin}/auth/callback` } })
+              }}
+              className="flex items-center justify-center gap-2 px-4 py-2.5 border border-[#E0E0E0] rounded-lg hover:bg-slate-50 transition-all duration-300 group"
+            >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -293,7 +337,13 @@ export default function SignUpPage() {
               </svg>
               <span className="text-slate-700 text-sm font-medium group-hover:text-slate-900">Google</span>
             </button>
-            <button className="flex items-center justify-center gap-2 px-4 py-2.5 border border-[#E0E0E0] rounded-lg hover:bg-slate-50 transition-all duration-300 group">
+            <button
+              type="button"
+              onClick={async () => {
+                await supabase.auth.signInWithOAuth({ provider: 'facebook', options: { redirectTo: `${window.location.origin}/auth/callback` } })
+              }}
+              className="flex items-center justify-center gap-2 px-4 py-2.5 border border-[#E0E0E0] rounded-lg hover:bg-slate-50 transition-all duration-300 group"
+            >
               <svg className="w-5 h-5" fill="#1877F2" viewBox="0 0 24 24">
                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
               </svg>
