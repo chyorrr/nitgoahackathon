@@ -15,20 +15,20 @@ import {
 } from 'lucide-react';
 
 interface AdminSidebarProps {
-  isOpen: boolean;
-  onClose: () => void;
-  adminRole: string;
-  adminUsername: string;
-  onLogout: () => void;
+  isOpen?: boolean;
+  onClose?: () => void;
+  adminRole?: string;
+  adminUsername?: string;
+  onLogout?: () => void;
   active?: string;
 }
 
 export default function AdminSidebar({ 
-  isOpen, 
-  onClose, 
-  adminRole, 
-  adminUsername, 
-  onLogout,
+  isOpen = true, 
+  onClose = () => {}, 
+  adminRole = 'admin', 
+  adminUsername = 'Admin', 
+  onLogout = () => {},
   active = 'dashboard' 
 }: AdminSidebarProps) {
   const menuItems = [

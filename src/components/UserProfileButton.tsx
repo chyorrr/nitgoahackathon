@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { AlertCircle, LogOut, User, FileText, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase/client'
@@ -10,6 +11,7 @@ interface UserProfileButtonProps {
 }
 
 export default function UserProfileButton({ onReportIssue }: UserProfileButtonProps) {
+  const router = useRouter()
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   const [userName, setUserName] = useState<string>('')
   const [userEmail, setUserEmail] = useState<string>('')
