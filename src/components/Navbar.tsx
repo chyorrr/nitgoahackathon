@@ -4,8 +4,10 @@ import { AlertCircle, CheckCircle, FileText, Flag, LogIn, LogOut, User, Settings
 import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import { useScroll, useTransform, motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
 export default function Navbar() {
+  const router = useRouter();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState('');
@@ -50,6 +52,15 @@ export default function Navbar() {
     localStorage.removeItem('userEmail');
   };
 
+  const handleReportClick = () => {
+    const authState = localStorage.getItem('isLoggedIn');
+    if (authState === 'true') {
+      router.push('/map');
+    } else {
+      router.push('/login');
+    }
+  };
+
   const menuItems = [
     { icon: <AlertCircle className="w-4 h-4" />, label: 'Add New Issue', href: '/map' },
     { icon: <FileText className="w-4 h-4" />, label: 'My Reports', href: '/reported', count: 3 },
@@ -90,13 +101,13 @@ export default function Navbar() {
 
           {/* Right: CTA + Profile */}
           <div className="flex items-center gap-3 ml-8">
-            <Link
-              href={isLoggedIn ? '/map' : '/login'}
+            <button
+              onClick={handleReportClick}
               className="inline-flex items-center gap-2 px-5 py-2.5 bg-red-500/90 hover:bg-red-600 text-white text-sm font-semibold rounded-xl shadow-sm hover:shadow-md backdrop-blur-sm transition-all duration-500 hover:-translate-y-0.5"
             >
               <AlertCircle className="w-4 h-4" />
               <span>Report Issue</span>
-            </Link>
+            </button>
 
             <div className="relative" ref={profileRef}>
               <button

@@ -4,14 +4,25 @@ import { motion } from 'framer-motion';
 import { ArrowRight, MapPin, Users } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Hero() {
+  const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const authState = localStorage.getItem('isLoggedIn');
     setIsLoggedIn(authState === 'true');
   }, []);
+
+  const handleReportClick = () => {
+    const authState = localStorage.getItem('isLoggedIn');
+    if (authState === 'true') {
+      router.push('/map');
+    } else {
+      router.push('/login');
+    }
+  };
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -141,14 +152,14 @@ export default function Hero() {
           transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
           className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
         >
-          <Link 
-            href={isLoggedIn ? "/map" : "/login"}
+          <button 
+            onClick={handleReportClick}
             className="group inline-flex items-center gap-2 px-8 py-4 bg-red-500/90 hover:bg-red-600 text-white rounded-2xl font-semibold shadow-md hover:shadow-lg backdrop-blur-sm transition-all duration-500 ease-out hover:-translate-y-1"
           >
             <MapPin className="w-5 h-5 transition-transform duration-500 group-hover:scale-110" />
             Report an Issue
             <ArrowRight className="w-5 h-5 transition-transform duration-500 group-hover:translate-x-1" />
-          </Link>
+          </button>
           
           <Link 
             href="/feed" 

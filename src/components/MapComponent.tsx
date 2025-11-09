@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from '@/contexts/LocationContext';
+import { getAllIssues, type Issue } from '@/lib/issuesStore';
 
 // Exporting the props interface so it can be used for typed dynamic import
 export interface MapComponentProps {
@@ -10,16 +11,8 @@ export interface MapComponentProps {
   category?: string;
   status?: string;
   onLocationSelected?: (coords: { lat: number; lng: number }) => void;
+  refreshTrigger?: number; // Add this to force re-render when new issue is added
 }
-
-// Sample issue markers
-const sampleIssues = [
-  { id: 1, lat: 15.4909, lng: 73.8278, type: 'pothole', status: 'pending', title: 'Pothole on Main Road' },
-  { id: 2, lat: 15.4989, lng: 73.8258, type: 'streetlight', status: 'resolved', title: 'Street Light Issue' },
-  { id: 3, lat: 15.4859, lng: 73.8318, type: 'garbage', status: 'in-progress', title: 'Garbage Collection' },
-  { id: 4, lat: 15.4939, lng: 73.8198, type: 'water', status: 'pending', title: 'Water Supply Problem' },
-  { id: 5, lat: 15.5019, lng: 73.8338, type: 'other', status: 'resolved', title: 'Other Issue' },
-];
 
 // Minimal loader to inject Google Maps JS API without extra deps
 function loadGoogleMaps(apiKey: string): Promise<typeof google> {
@@ -47,17 +40,27 @@ function loadGoogleMaps(apiKey: string): Promise<typeof google> {
   });
 }
 
-export default function MapComponent({ onReportIssue, onLocationSelected }: MapComponentProps) {
+export default function MapComponent({ onReportIssue, onLocationSelected, refreshTrigger }: MapComponentProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map | null>(null);
+  const markersRef = useRef<google.maps.Marker[]>([]);
   const [isClient, setIsClient] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [mapIssues, setMapIssues] = useState<Issue[]>([]);
   const { userLocation } = useLocation();
   const onReportIssueRef = useRef(onReportIssue);
   const onLocationSelectedRef = useRef(onLocationSelected);
 
   useEffect(() => { onReportIssueRef.current = onReportIssue; }, [onReportIssue]);
   useEffect(() => { onLocationSelectedRef.current = onLocationSelected; }, [onLocationSelected]);
+
+  // Load issues when component mounts or refreshTrigger changes
+  useEffect(() => {
+    if (isClient) {
+      const issues = getAllIssues();
+      setMapIssues(issues);
+    }
+  }, [isClient, refreshTrigger]);
 
   useEffect(() => {
     setIsClient(true);
@@ -136,15 +139,21 @@ export default function MapComponent({ onReportIssue, onLocationSelected }: MapC
           scale: 1.2,
         });
 
-        // Add sample markers
-        sampleIssues.forEach((issue) => {
+        // Clear existing markers
+        markersRef.current.forEach(marker => marker.setMap(null));
+        markersRef.current = [];
+
+        // Add markers for all issues
+        mapIssues.forEach((issue) => {
           const color = statusColors[issue.status] || '#757575';
           const marker = new g.maps.Marker({
-            position: { lat: issue.lat, lng: issue.lng },
+            position: { lat: issue.coordinates.lat, lng: issue.coordinates.lng },
             map,
             icon: makeMarkerIcon(color),
             title: issue.title,
           });
+
+          markersRef.current.push(marker);
 
           const info = new g.maps.InfoWindow({
             content: `
@@ -154,7 +163,9 @@ export default function MapComponent({ onReportIssue, onLocationSelected }: MapC
                   Status:
                   <span style="display:inline-block; padding:2px 8px; border-radius:9999px; color:#fff; background:${color}; font-size:11px; margin-left:6px;">${issue.status}</span>
                 </div>
-                <div style="font-size:12px; color:#6B7280;">Type: ${issue.type}</div>
+                <div style="font-size:12px; color:#6B7280;">Category: ${issue.category}</div>
+                <div style="font-size:12px; color:#6B7280; margin-top:4px;">Location: ${issue.location}</div>
+                <div style="font-size:12px; color:#9CA3AF; margin-top:4px;">By: ${issue.reportedBy}</div>
               </div>
             `,
           });
@@ -292,7 +303,7 @@ export default function MapComponent({ onReportIssue, onLocationSelected }: MapC
       if (typeToggleEl && typeToggleEl.parentElement) typeToggleEl.parentElement.removeChild(typeToggleEl);
       listeners.forEach((l) => l.remove());
     };
-  }, [isClient]);
+  }, [isClient, mapIssues]);
 
   if (!isClient) {
     return (

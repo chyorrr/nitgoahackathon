@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowBigUp, 
@@ -13,7 +14,8 @@ import {
   TrendingUp,
   Calendar,
   Shield,
-  FileText
+  FileText,
+  CheckCircle
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -37,7 +39,65 @@ interface Issue {
   };
   images: string[];
   hasUpvoted?: boolean;
+  beforeImage?: string;
+  afterImage?: string;
+  resolvedDate?: string;
 }
+
+// Resolved issues with before/after
+const resolvedIssues: Issue[] = [
+  {
+    id: 'r1',
+    title: 'Pothole on Station Road Fixed',
+    description: 'Major pothole that was causing traffic issues has been completely repaired.',
+    category: 'Potholes',
+    location: 'Station Road, Sector 12',
+    coordinates: { lat: 15.4850, lng: 73.8250 },
+    upvotes: 234,
+    comments: 45,
+    status: 'resolved',
+    timeAgo: '3 days ago',
+    author: { name: 'Municipal Corp', avatar: 'MC' },
+    images: [],
+    beforeImage: '/images/issues/pothole_before.jpg.png',
+    afterImage: '/images/issues/pothole_after.jpg.png',
+    resolvedDate: 'Nov 6, 2025'
+  },
+  {
+    id: 'r2',
+    title: 'Street Light Restored at Park Avenue',
+    description: 'Non-functional street light has been replaced with new LED fixture.',
+    category: 'Street Lights',
+    location: 'Park Avenue, Sector 5',
+    coordinates: { lat: 15.4920, lng: 73.8290 },
+    upvotes: 156,
+    comments: 28,
+    status: 'resolved',
+    timeAgo: '5 days ago',
+    author: { name: 'Public Works Dept', avatar: 'PW' },
+    images: [],
+    beforeImage: '/images/issues/light_before.jpg.png',
+    afterImage: '/images/issues/light_after.jpg.png',
+    resolvedDate: 'Nov 4, 2025'
+  },
+  {
+    id: 'r3',
+    title: 'Garden Area Cleaned and Maintained',
+    description: 'Overgrown bushes trimmed and garbage cleared from community garden.',
+    category: 'Garbage',
+    location: 'Community Garden, Block C',
+    coordinates: { lat: 15.4880, lng: 73.8310 },
+    upvotes: 189,
+    comments: 32,
+    status: 'resolved',
+    timeAgo: '1 week ago',
+    author: { name: 'Sanitation Dept', avatar: 'SD' },
+    images: [],
+    beforeImage: '/images/issues/garden_before.png',
+    afterImage: '/images/issues/garden_after.png',
+    resolvedDate: 'Nov 2, 2025'
+  }
+];
 
 // Sample data - in production, this would come from an API
 const sampleIssues: Issue[] = [
@@ -56,7 +116,7 @@ const sampleIssues: Issue[] = [
       name: 'Rajesh Kumar',
       avatar: 'RK'
     },
-    images: ['/placeholder-pothole.jpg'],
+    images: ['/images/issues/pothole_mg.jpg'],
     hasUpvoted: false
   },
   {
@@ -74,7 +134,7 @@ const sampleIssues: Issue[] = [
       name: 'Priya Sharma',
       avatar: 'PS'
     },
-    images: [],
+    images: ['/images/issues/light_before.jpg.png'],
     hasUpvoted: false
   },
   {
@@ -92,7 +152,7 @@ const sampleIssues: Issue[] = [
       name: 'Amit Patel',
       avatar: 'AP'
     },
-    images: ['/placeholder-garbage.jpg', '/placeholder-garbage2.jpg'],
+    images: ['/images/issues/garbage_before.jpg.png'],
     hasUpvoted: false
   },
   {
@@ -110,7 +170,7 @@ const sampleIssues: Issue[] = [
       name: 'Sneha Reddy',
       avatar: 'SR'
     },
-    images: [],
+    images: ['/images/issues/pothole_before.jpg.png'],
     hasUpvoted: false
   },
   {
@@ -128,12 +188,13 @@ const sampleIssues: Issue[] = [
       name: 'Mohammed Ali',
       avatar: 'MA'
     },
-    images: ['/placeholder-footpath.jpg'],
+    images: ['/images/issues/Footpath_01.jpg'],
     hasUpvoted: false
   }
 ];
 
 export default function FeedPage() {
+  const router = useRouter();
   const [issues, setIssues] = useState<Issue[]>(sampleIssues);
   const [sortBy, setSortBy] = useState<'trending' | 'recent'>('trending');
   const [filterCategory, setFilterCategory] = useState<string>('all');
@@ -151,7 +212,7 @@ export default function FeedPage() {
 
   const handleUpvote = (issueId: string) => {
     if (!isLoggedIn) {
-      alert('Please login to upvote issues');
+      router.push('/login');
       return;
     }
     setIssues(issues.map(issue => {
@@ -369,9 +430,12 @@ export default function FeedPage() {
                       <div className={`grid gap-2 mb-4 ${issue.images.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
                         {issue.images.map((img, idx) => (
                           <div key={idx} className="relative w-full aspect-video bg-zinc-100 rounded-lg overflow-hidden">
-                            <div className="absolute inset-0 flex items-center justify-center text-zinc-400 text-sm">
-                              Image Placeholder
-                            </div>
+                            <Image
+                              src={img}
+                              alt={`Issue image ${idx + 1}`}
+                              fill
+                              className="object-cover"
+                            />
                           </div>
                         ))}
                       </div>
@@ -408,12 +472,6 @@ export default function FeedPage() {
                           : 'hover:bg-zinc-50 text-zinc-600'
                       }`}
                       title={!isLoggedIn ? 'Login to comment' : ''}
-                      onClick={(e) => {
-                        if (!isLoggedIn) {
-                          e.preventDefault();
-                          alert('Please login to view and add comments');
-                        }
-                      }}
                     >
                       <MessageCircle className="w-5 h-5" />
                       <span className="text-sm font-semibold">{issue.comments}</span>
@@ -437,6 +495,103 @@ export default function FeedPage() {
                 </motion.div>
               ))}
             </AnimatePresence>
+          </div>
+
+          {/* Past Fixes Section */}
+          <div className="mt-12">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold bg-linear-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent mb-2">
+                Past Fixes
+              </h2>
+              <p className="text-zinc-700">See how community reports led to real changes</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {resolvedIssues.map((issue, index) => (
+                <motion.div
+                  key={issue.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="bg-white rounded-xl border border-green-200 overflow-hidden hover:shadow-lg transition-all hover-lift"
+                >
+                  {/* Before/After Images */}
+                  <div className="relative h-48">
+                    <div className="absolute inset-0 grid grid-cols-2 gap-0.5">
+                      {/* Before */}
+                      <div className="relative bg-zinc-100 overflow-hidden group">
+                        {issue.beforeImage && (
+                          <Image
+                            src={issue.beforeImage}
+                            alt="Before"
+                            fill
+                            className="object-cover"
+                          />
+                        )}
+                        <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-md">
+                          BEFORE
+                        </div>
+                      </div>
+                      {/* After */}
+                      <div className="relative bg-zinc-100 overflow-hidden group">
+                        {issue.afterImage && (
+                          <Image
+                            src={issue.afterImage}
+                            alt="After"
+                            fill
+                            className="object-cover"
+                          />
+                        )}
+                        <div className="absolute top-2 right-2 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-md">
+                          AFTER
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-4">
+                    <div className="flex items-start justify-between mb-2">
+                      <span className="px-2.5 py-1 bg-green-100 text-green-700 rounded-lg text-xs font-semibold flex items-center gap-1">
+                        <CheckCircle className="w-3 h-3" />
+                        Resolved
+                      </span>
+                      <span className="text-xs text-zinc-500">{issue.resolvedDate}</span>
+                    </div>
+                    
+                    <h3 className="font-bold text-zinc-900 mb-2 leading-snug line-clamp-2">
+                      {issue.title}
+                    </h3>
+                    
+                    <p className="text-zinc-600 text-sm mb-3 line-clamp-2">
+                      {issue.description}
+                    </p>
+
+                    <div className="flex items-center gap-1.5 text-xs text-zinc-500 mb-3">
+                      <MapPin className="w-3.5 h-3.5" />
+                      <span className="line-clamp-1">{issue.location}</span>
+                    </div>
+
+                    {/* Stats */}
+                    <div className="flex items-center gap-4 pt-3 border-t border-zinc-100">
+                      <div className="flex items-center gap-1.5 text-zinc-600">
+                        <ArrowBigUp className="w-4 h-4 fill-green-600 text-green-600" />
+                        <span className="text-sm font-semibold">{issue.upvotes}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-zinc-600">
+                        <MessageCircle className="w-4 h-4" />
+                        <span className="text-sm font-semibold">{issue.comments}</span>
+                      </div>
+                      <div className="ml-auto">
+                        <span className="px-2 py-1 bg-zinc-100 text-zinc-700 rounded-md text-xs font-medium">
+                          {issue.category}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </div>
 
           {/* Empty State */}

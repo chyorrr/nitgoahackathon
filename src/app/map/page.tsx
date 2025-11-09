@@ -7,6 +7,8 @@ import dynamic from 'next/dynamic';
 import MapNavbar from '@/components/MapNavbar';
 import AuthGuard from '@/components/AuthGuard';
 import type { MapComponentProps } from '@/components/MapComponent';
+import { addReportedIssue } from '@/lib/issuesStore';
+import { useRouter } from 'next/navigation';
 
 // Dynamically import the Map component to avoid SSR issues
 // Typed dynamic import so TS knows the component's props
@@ -23,6 +25,7 @@ const MapComponent = dynamic<MapComponentProps>(() => import('@/components/MapCo
 });
 
 export default function MapPage() {
+  const router = useRouter();
   const [showReportModal, setShowReportModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -30,7 +33,9 @@ export default function MapPage() {
   const [issueTitle, setIssueTitle] = useState('');
   const [issueDescription, setIssueDescription] = useState('');
   const [issueLocation, setIssueLocation] = useState('');
+  const [selectedCoords, setSelectedCoords] = useState<{ lat: number; lng: number } | null>(null);
   const [uploadedImages, setUploadedImages] = useState<File[]>([]);
+  const [refreshMap, setRefreshMap] = useState(0);
   const categoryRef = useRef<HTMLDivElement>(null);
 
   const categories = ['Potholes', 'Street Lights', 'Garbage', 'Water Supply', 'Others'];
@@ -43,21 +48,42 @@ export default function MapPage() {
   };
 
   const handleSubmitReport = () => {
-    // Handle report submission
-    console.log({
+    if (!issueTitle || !issueDescription || !selectedCategory || !selectedCoords) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
+    // Get user name from localStorage
+    const userName = localStorage.getItem('userName') || 'Anonymous';
+
+    // Add issue to store
+    addReportedIssue({
       title: issueTitle,
       description: issueDescription,
-      location: issueLocation,
       category: selectedCategory,
-      images: uploadedImages
+      location: issueLocation || `${selectedCoords.lat.toFixed(4)}, ${selectedCoords.lng.toFixed(4)}`,
+      coordinates: selectedCoords,
+      reportedBy: userName,
+      images: []
     });
+
+    // Close modal and reset form
     setShowReportModal(false);
-    // Reset form
     setIssueTitle('');
     setIssueDescription('');
     setIssueLocation('');
     setSelectedCategory('');
     setUploadedImages([]);
+    setSelectedCoords(null);
+
+    // Trigger map refresh
+    setRefreshMap(prev => prev + 1);
+
+    // Show success message and redirect
+    setTimeout(() => {
+      alert('Issue reported successfully!');
+      router.push('/reported');
+    }, 500);
   };
 
   // Close dropdown when clicking outside
@@ -294,8 +320,10 @@ export default function MapPage() {
             <MapComponent 
               onReportIssue={() => setShowReportModal(true)}
               onLocationSelected={({ lat, lng }) => {
+                setSelectedCoords({ lat, lng });
                 setIssueLocation(`${lat.toFixed(6)}, ${lng.toFixed(6)}`);
               }}
+              refreshTrigger={refreshMap}
             />
           </div>
         </div>

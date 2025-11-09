@@ -7,22 +7,27 @@ import { LogIn } from 'lucide-react';
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
+    // Check auth state immediately on mount
     const checkAuth = () => {
-      const authState = localStorage.getItem('isLoggedIn');
-      if (authState !== 'true') {
+      try {
+        const authState = localStorage.getItem('isLoggedIn');
+        setIsAuthenticated(authState === 'true');
+      } catch (error) {
+        console.error('Error checking auth state:', error);
         setIsAuthenticated(false);
-      } else {
-        setIsAuthenticated(true);
+      } finally {
+        setIsChecking(false);
       }
     };
 
     checkAuth();
   }, []);
 
-  if (isAuthenticated === null) {
-    // Loading state
+  // Show loading state while checking authentication
+  if (isChecking || isAuthenticated === null) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-violet-50 via-indigo-50 to-purple-50">
         <div className="text-center">
@@ -33,8 +38,8 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (isAuthenticated === false) {
-    // Not authenticated - show login prompt
+  // Not authenticated - show login prompt
+  if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-violet-50 via-indigo-50 to-purple-50 pt-16">
         <div className="max-w-md w-full mx-4">

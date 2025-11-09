@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
   ArrowBigUp, 
@@ -16,73 +16,16 @@ import {
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import AuthGuard from '@/components/AuthGuard';
-
-interface Issue {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  location: string;
-  coordinates: { lat: number; lng: number };
-  upvotes: number;
-  comments: number;
-  status: 'pending' | 'in-progress' | 'resolved';
-  timeAgo: string;
-  reportedBy: string;
-  images: string[];
-  hasUpvoted?: boolean;
-}
-
-const reportedIssues: Issue[] = [
-  {
-    id: '1',
-    title: 'Large pothole on MG Road causing accidents',
-    description: 'There is a massive pothole near the traffic signal that has been causing accidents. Multiple vehicles have damaged their tires.',
-    category: 'Potholes',
-    location: 'MG Road, Near Central Mall',
-    coordinates: { lat: 15.4909, lng: 73.8278 },
-    upvotes: 142,
-    comments: 23,
-    status: 'in-progress',
-    timeAgo: '2 hours ago',
-    reportedBy: 'You',
-    images: ['/placeholder-pothole.jpg'],
-    hasUpvoted: true
-  },
-  {
-    id: '2',
-    title: 'Street light not working for 2 weeks',
-    description: 'The street light on Park Avenue has been non-functional for the past two weeks, making the area very dark and unsafe at night.',
-    category: 'Street Lights',
-    location: 'Park Avenue, Sector 5',
-    coordinates: { lat: 15.4989, lng: 73.8312 },
-    upvotes: 89,
-    comments: 15,
-    status: 'pending',
-    timeAgo: '5 hours ago',
-    reportedBy: 'You',
-    images: [],
-    hasUpvoted: true
-  },
-  {
-    id: '3',
-    title: 'Broken footpath causing difficulties',
-    description: 'The footpath tiles are broken and displaced, making it difficult for pedestrians, especially elderly people and children.',
-    category: 'Others',
-    location: 'Station Road',
-    coordinates: { lat: 15.4925, lng: 73.8265 },
-    upvotes: 45,
-    comments: 12,
-    status: 'resolved',
-    timeAgo: '2 days ago',
-    reportedBy: 'You',
-    images: ['/placeholder-footpath.jpg'],
-    hasUpvoted: true
-  }
-];
+import { getReportedIssues, type Issue } from '@/lib/issuesStore';
 
 export default function ReportedIssuesPage() {
-  const [issues, setIssues] = useState<Issue[]>(reportedIssues);
+  const [issues, setIssues] = useState<Issue[]>([]);
+  
+  // Load reported issues from localStorage on mount
+  useEffect(() => {
+    const loadedIssues = getReportedIssues();
+    setIssues(loadedIssues);
+  }, []);
   const [filterStatus, setFilterStatus] = useState<string>('all');
 
   const handleUpvote = (issueId: string) => {
