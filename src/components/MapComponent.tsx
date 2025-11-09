@@ -121,7 +121,8 @@ export default function MapComponent({ onReportIssue, onLocationSelected, refres
             });
           }
         }
-        const map = mapInstanceRef.current;
+  const map = mapInstanceRef.current;
+  if (!map) return; // Type guard: ensure map is available
 
         const statusColors: Record<string, string> = {
           pending: '#EF4444',
@@ -189,7 +190,9 @@ export default function MapComponent({ onReportIssue, onLocationSelected, refres
               <line x1="12" y1="16" x2="12.01" y2="16"></line>
             </svg>
           </button>`;
-        map.controls[g.maps.ControlPosition.RIGHT_BOTTOM].push(reportButtonEl);
+        if (map) {
+          map.controls[g.maps.ControlPosition.RIGHT_BOTTOM].push(reportButtonEl);
+        }
 
         setTimeout(() => {
           const btn = document.getElementById('gm-report-issue-btn');
@@ -209,7 +212,9 @@ export default function MapComponent({ onReportIssue, onLocationSelected, refres
           <button id="gm-type-road" style="padding:8px 10px; font-size:12px; background:#111827; color:#fff; border:none; cursor:pointer">Road</button>
           <button id="gm-type-sat" style="padding:8px 10px; font-size:12px; background:#ffffff; color:#111827; border:none; cursor:pointer">Satellite</button>
         `;
-        map.controls[g.maps.ControlPosition.TOP_RIGHT].push(typeToggleEl);
+        if (map) {
+          map.controls[g.maps.ControlPosition.TOP_RIGHT].push(typeToggleEl);
+        }
         setTimeout(() => {
           const roadBtn = document.getElementById('gm-type-road');
           const satBtn = document.getElementById('gm-type-sat');
